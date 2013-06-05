@@ -12,7 +12,6 @@ public class Triple {
 	 * @param entry
 	 */
 	public Triple(int row, int column, double entry) {
-		super();
 		this.row = row;
 		this.column = column;
 		this.entry = entry;
