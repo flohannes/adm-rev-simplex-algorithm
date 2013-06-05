@@ -58,6 +58,52 @@ public class Matrix {
 		columns.get(columnIndex).add(t);
 	}
 	
+	/**
+	 * Rechtsseitige Vektormultiplikation
+	 * @param vec
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	public Vector multiplyMatrixVektor( Vector vec) 
+									throws IllegalArgumentException{
+		if( vec.getSize() != colNum)//Dimensions-check
+			throw new IllegalArgumentException("Matrixdimension mismatch");
+		
+		Vector result = new Vector();
+		
+		for(int  i=0 ; i< rowNum ; i++){//alle Zeilen der Matrix
+			int sum = 0;
+			int k = 0;//Laufindizes
+			int n = 0;
+			for(int j=0 ; j<vec.getLength() ; j++){//alle Eintraege des Vec
+				Tupel<Integer,Double> tmp = vec.get(j);
+				int t = tmp.getNum();
+				//Check ob in der Matrix an Stelle t ein 
+				//von 0 verschiedenes Element steht
+				while ( rows.get(i).get(k).getColumn() < t){
+					k++;
+					if ( k == rows.get(i).size() ) break;
+				}
+				//falls in Zeile i der Matrix nur noch 0 steht --> Abbruch
+				if ( k == rows.get(i).size() ) break;
+				if( rows.get(i).get(k).getColumn() == t){
+					sum += rows.get(i).get(k).getEntry()* tmp.getEntry();
+				}
+			}
+			//Eintrag zum Vec hinzufuegen, falls != 0
+			if( sum != 0 ) result.addEntry(i, sum);
+				
+		}
+		
+		return result;
+	}
+	
+	public Vector multiplyVectorMatrix( Vector vec){
+		
+		return null;
+	}
+	
+	
 	
 	
 	
@@ -83,5 +129,26 @@ public class Matrix {
 		return erg;
 	}
 	
+	
+	public static void main(String[] args) {
+		Matrix test = new Matrix();
+		Vector vec = new Vector(2);
+		for (int i=0 ; i<2 ;i++){
+			test.addColumn();
+			test.addRow();
+		}
+		test.addEntry(0, 1, 2);
+		test.addEntry(1, 0, 1);
+		test.addEntry(1, 1, 2);
+		vec.addEntry(0, 2);
+		vec.addEntry(1, 2);
+		Vector res = test.multiplyMatrixVektor(vec);
+		System.out.println(res);
+		
+		
+		
+
+		
+	}
 
 }

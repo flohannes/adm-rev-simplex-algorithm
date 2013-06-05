@@ -98,6 +98,8 @@ public class Input {
 			}
 		}
 		in.close();
+		b.setSize(rn.size());
+		c.setSize(cn.size());
 
 	}
 	
