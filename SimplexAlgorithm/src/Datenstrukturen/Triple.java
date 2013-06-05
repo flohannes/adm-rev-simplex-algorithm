@@ -1,6 +1,6 @@
 package Datenstrukturen;
 
-public class Triple {
+public class Triple{
 
 	private int row;
 	private int column;
@@ -12,9 +12,13 @@ public class Triple {
 	 * @param entry
 	 */
 	public Triple(int row, int column, double entry) {
-		this.row = row;
+		this.row = row ;
 		this.column = column;
 		this.entry = entry;
+	}
+	
+	public Triple(){
+		
 	}
 
 	public int getRow() {
@@ -40,7 +44,8 @@ public class Triple {
 	public void setEntry(double entry) {
 		this.entry = entry;
 	}
+
 	
-	
+
 	
 }
