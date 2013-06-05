@@ -23,9 +23,9 @@ public class Matrix {
 	public void addRow(){
 		//Dummy- knoten der am anfang jeder Zeile steht 
 		//und die zeilenzahl angibt
-		Triple t = new Triple( rowNum , 0 , 0);
+//		Triple t = new Triple( rowNum , 0 , 0);
 		ArrayList<Triple> l = new ArrayList<Triple>();
-		l.add(t);
+//		l.add(t);
 		
 		rows.add(l);
 		
@@ -35,9 +35,9 @@ public class Matrix {
 	public void addColumn(){
 		//Dummy- knoten der am anfang jeder Spalte steht 
 		//und die zeilenzahl angibt
-		Triple t = new Triple( 0 , colNum , 0);
+//		Triple t = new Triple(0, colNum , 0);
 		ArrayList<Triple> l = new ArrayList<Triple>();
-		l.add(t);
+//		l.add(t);
 		
 		columns.add(l);
 		
@@ -45,17 +45,17 @@ public class Matrix {
 	}
 	
 	/**
-	 * Erstellt Triple und fügt es der jeweiligen Spalte UND Zeile hinzu
+	 * Erstellt Tupel und fügt es der jeweiligen Spalte UND Zeile hinzu
 	 * @param row
 	 * @param col
 	 * @param entry
 	 */
-	public void addEntry( int row , int col , double entry){
-		Triple t = new Triple( row , col , entry);
+	public void addEntry( int rowIndex,  int columnIndex , double entry){
+		Triple t = new Triple(rowIndex , columnIndex, entry);
 		
-		rows.get(row).add(t);
+		rows.get(rowIndex).add(t);
 		
-		columns.get(col).add(t);
+		columns.get(columnIndex).add(t);
 	}
 	
 	
