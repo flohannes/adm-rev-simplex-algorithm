@@ -71,7 +71,17 @@ public class Matrix {
 		return colNum;
 	}
 
-	
+	public String toString(){
+		String erg = "";
+		for(int x = 0; x < rows.size(); x++){
+//			erg = "";
+			for(Triple t : rows.get(x)){
+				erg = erg + " ; " + t.getEntry();
+			}
+			erg += "\n";
+		}
+		return erg;
+	}
 	
 
 }
