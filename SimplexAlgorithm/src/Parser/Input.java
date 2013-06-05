@@ -16,6 +16,7 @@ public class Input {
 	private ArrayList<String> rn;	//row names
 	private ArrayList<Tupel<String, String>> ec;	//Is row equation or inequality? (eq?, name)
 	private Vector c;	//objective function /cost
+	private Vector b;	//RHS
 	
 	
 	
@@ -26,7 +27,7 @@ public class Input {
 		rn = new ArrayList<String>();
 		ec = new ArrayList<Tupel<String, String>>();
 		c = new  Vector();
-//		b = 
+		b = new  Vector();
 		
 		BufferedReader in = new BufferedReader(new FileReader(path));
 		String line = null;
@@ -35,7 +36,14 @@ public class Input {
 		boolean columns = false;
 		boolean rhs = false; 
 		
+		int counter = 0;
 		while ((line = in.readLine()) != null) {
+//			line.trim();
+//			String s = line.trim().replaceAll(" +"," ");
+////			System.out.println();
+//			String[] zeile2 = s.split(" ");
+//			System.out.println(counter + " : "+ line.isEmpty() +" . length:" +  zeile2.length);
+//			counter++;
 			if(line.isEmpty()){
 				continue;
 			}
@@ -53,22 +61,25 @@ public class Input {
 				break;
 			}
 			else if (rows){//Zeilen einlesen
-				String[] zeile = line.split(" ");
+				String tempZeile = line.trim().replaceAll(" +", " ");
+				String[] zeile = tempZeile.split(" ");
 				ec.add(new Tupel<String, String>(zeile[0], zeile[1]));
 				rn.add(zeile[1]);
 				m.addRow();
 			}else
 			if ( columns){//Spalten einlesen
-				String[] zeile = line.split(" ");
+				String tempZeile = line.trim().replaceAll(" +", " ");
+				String[] zeile = tempZeile.split(" ");
 				if(!cn.contains(zeile[0])){
 					cn.add(zeile[0]);
+					m.addColumn();
 				}
 				if(zeile[1].equals("COST")){
 					c.addEntry(cn.indexOf(zeile[0]), Double.parseDouble(zeile[2]));
 				} else{
 					m.addEntry(rn.indexOf(zeile[1]), cn.indexOf(zeile[0]), Double.parseDouble(zeile[2]));
 				}
-				if(zeile.length > 2){
+				if(zeile.length > 3){
 					if(zeile[3].equals("COST")){
 						c.addEntry(cn.indexOf(zeile[0]), Double.parseDouble(zeile[4]));
 					} else{
@@ -78,7 +89,12 @@ public class Input {
 				
 			}else
 			if( rhs){//rechte seite einlesen
-				String[] zeile = line.split(" ");
+				String tempZeile = line.trim().replaceAll(" +", " ");
+				String[] zeile = tempZeile.split(" ");
+				b.addEntry(rn.indexOf(zeile[1]), Double.parseDouble(zeile[2]));
+				if(zeile.length > 3){
+					b.addEntry(rn.indexOf(zeile[3]), Double.parseDouble(zeile[4]));
+				}
 			}
 		}
 		in.close();
@@ -86,7 +102,14 @@ public class Input {
 	}
 	
 	public static void main (String[] arg){
-		
+		try {
+			Input in = new Input("src/InputData/bsp.mps");
+			System.out.println("Ausgabe: ");
+			System.out.println(in.getM().toString());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public Matrix getM() {
