@@ -98,9 +98,41 @@ public class Matrix {
 		return result;
 	}
 	
-	public Vector multiplyVectorMatrix( Vector vec){
+	public Vector multiplyVectorMatrix( Vector vec)
+								throws IllegalArgumentException{
+		if( vec.getSize() != rowNum)//Dimensions-check
+			throw new IllegalArgumentException("Dimension mismatch");
 		
-		return null;
+		Vector result = new Vector();
+		
+		for(int  i=0 ; i< colNum ; i++){//alle Spalten der Matrix
+			int sum = 0;
+			int k = 0;//Laufindizes
+			int n = 0;
+			for(int j=0 ; j<vec.getLength() ; j++){//alle Eintraege des Vec
+				Tupel<Integer,Double> tmp = vec.get(j);
+				int t = tmp.getNum();
+				//Check ob in der Matrix an Stelle t ein 
+				//von 0 verschiedenes Element steht
+				while ( columns.get(i).get(k).getRow() < t){
+					k++;
+					if ( k == columns.get(i).size() ) break;
+				}
+				//falls in Zeile i der Matrix nur noch 0 steht --> Abbruch
+				if ( k == columns.get(i).size() ) break;
+				if( columns.get(i).get(k).getRow() == t){
+					sum += columns.get(i).get(k).getEntry()* tmp.getEntry();
+
+
+
+				}
+			}
+			//Eintrag zum Vec hinzufuegen, falls != 0
+			if( sum != 0 ) result.addEntry(i, sum);
+				
+		}
+		
+		return result;
 	}
 	
 	
@@ -137,12 +169,14 @@ public class Matrix {
 			test.addColumn();
 			test.addRow();
 		}
-		test.addEntry(0, 1, 2);
-		test.addEntry(1, 0, 1);
+		test.addEntry(0, 1, 2);//0  2
+		test.addEntry(1, 0, 1);//1  2
 		test.addEntry(1, 1, 2);
 		vec.addEntry(0, 2);
-		vec.addEntry(1, 2);
-		Vector res = test.multiplyMatrixVektor(vec);
+		vec.addEntry(1, 2);//2  2
+		//Vector res = test.multiplyMatrixVektor(vec);
+		Vector res = test.multiplyVectorMatrix(vec);
+		System.out.println("mat: "+ test);
 		System.out.println(res);
 		
 		
