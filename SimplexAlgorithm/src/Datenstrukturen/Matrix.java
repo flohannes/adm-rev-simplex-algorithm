@@ -98,6 +98,12 @@ public class Matrix {
 		return result;
 	}
 	
+	/**
+	 * Linksseitige Vektormultiplikation
+	 * @param vec
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
 	public Vector multiplyVectorMatrix( Vector vec)
 								throws IllegalArgumentException{
 		if( vec.getSize() != rowNum)//Dimensions-check
@@ -136,10 +142,82 @@ public class Matrix {
 	}
 	
 	
+	/**
+	 * Multipliziert Eta-Matrix mit this (E*A)
+	 * (Attention!!! Overwrites the given Matrix)
+	 * @param eta Eta-Spalte
+	 * @param index Spaltenindex der Eta- Spalte
+	 */
+	public void multiplyEta( Vector eta , int index){
+		
+		
+		for( Tupel<Integer,Double> tup : eta.getVec()){//suche von 0 versch. Eintrag in eta
+			int row = tup.getNum();						//und bearbeite entsprechende Zeile von A
+			for( int i=0 ; i<colNum ; i++){
+				double entry_index = 0;//Eintrag in A, Zeile 'index'
+				//double entry_row =0;//Eintrag in A, Zeile 'row'
+				int k=0;
+				while( columns.get(i).get(k).getRow() < index ){//suche Element in der aktuellen Spalte
+					k++;										// das an 'index'- Stellt steht
+					if(k == columns.get(i).size() ) break;
+				}
+				if( k == columns.get(i).size() || columns.get(i).get(k).getRow() > index){
+					continue;						//es ist Null, und bleibt Null --> naechste Spalte
+					
+				}
+				if( columns.get(i).get(k).getRow() == index){//es ist ungl. 0 mit Wert 'entry'
+					entry_index = columns.get(i).get(k).getEntry();
+				}
+				if(row == index){// 'index'- Zeile
+					columns.get(i).get(k).setEntry(entry_index * tup.getEntry());
+					//er sollte den Eintrag implizit auch in rows aendern, tut er hoffentlich
+					//sollte aber noch ueberprueft werden TODO
+				}else if( row < index){
+					int j=0;
+					while( columns.get(i).get(j).getRow() < row){
+						j++;
+					}
+					if( columns.get(i).get(j).getRow() > row){//Element ist 0 
+						Triple trip = new Triple( row , i , entry_index*tup.getEntry());
+						columns.get(i).add(j, trip);
+						insertNewElementToRows(row, i, trip);
+				
+					}
+					if( columns.get(i).get(j).getRow() == row){
+						columns.get(i).get(j).setEntry(entry_index * tup.getEntry() + columns.get(i).get(j).getEntry());
+					}
+				}else{
+					while( columns.get(i).get(k).getRow() < row ){
+						k++;										
+						if(k == columns.get(i).size() ) break;
+					}
+					if(k == columns.get(i).size() ){//Element ist 0
+						Triple trip = new Triple( row , i , entry_index*tup.getEntry());
+						columns.get(i).add(trip);
+						insertNewElementToRows(row, i, trip);
+					
+					}
+					if( columns.get(i).get(k).getRow() == row){
+						columns.get(i).get(k).setEntry(entry_index * tup.getEntry() + columns.get(i).get(k).getEntry());
+
+					}
+
+				}
+				
+				
+					
+			}
+		}
+	}
 	
-	
-	
-	
+	private void insertNewElementToRows( int row , int col , Triple entry){
+		int k=0;
+		while( rows.get(row).get(k).getColumn() < col){
+			k++;
+			if( k == rows.get(row).size()) break;
+		}
+		rows.get(row).add(k, entry);
+	}
 	
 	public int getRowNum() {
 		return rowNum;
@@ -151,10 +229,25 @@ public class Matrix {
 
 	public String toString(){
 		String erg = "";
+	
 		for(int x = 0; x < rows.size(); x++){
 //			erg = "";
+			int i =0;
 			for(Triple t : rows.get(x)){
+				if( t.getColumn() > i){
+					while( i< t.getColumn()){
+						erg += " ; 0";
+						i++;
+					}
+				}
+				i++;
 				erg = erg + " ; " + t.getEntry();
+			}
+			if(i < colNum){
+				while( i< colNum){
+					erg += " ; 0";
+					i++;
+				}
 			}
 			erg += "\n";
 		}
@@ -164,12 +257,12 @@ public class Matrix {
 	
 	public static void main(String[] args) {
 		Matrix test = new Matrix();
-		Vector vec = new Vector(2);
-		for (int i=0 ; i<2 ;i++){
+		Vector vec = new Vector(3);
+		for (int i=0 ; i<3 ;i++){
 			test.addColumn();
 			test.addRow();
 		}
-		test.addEntry(0, 1, 2);//0  2
+/*		test.addEntry(0, 1, 2);//0  2
 		test.addEntry(1, 0, 1);//1  2
 		test.addEntry(1, 1, 2);
 		vec.addEntry(0, 2);
@@ -178,11 +271,18 @@ public class Matrix {
 		Vector res = test.multiplyVectorMatrix(vec);
 		System.out.println("mat: "+ test);
 		System.out.println(res);
-		
-		
-		
+*/		
+		test.addEntry(0, 0, 1);
+		test.addEntry(1, 1, 1);
+		test.addEntry(2, 2, 1);
+		vec.addEntry(0, 1);
+		vec.addEntry(1, 1);
+		vec.addEntry(2, 1);
 
+		System.out.println(test);
 		
+		test.multiplyEta(vec, 1);
+		System.out.println(test);
 	}
 
 }
