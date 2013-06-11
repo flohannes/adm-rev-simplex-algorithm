@@ -19,8 +19,23 @@ public class Vector {
 		this.size = size;
 	}
 	
-	public void addEntry(int index, double value){
-		vec.add(new Tupel<Integer, Double>(index, value));
+	public void addEntry(int index, double value) throws IllegalArgumentException{
+		
+		if(vec.isEmpty()){
+			vec.add(new Tupel<Integer, Double>(index, value));
+		}
+		else if(vec.get(vec.size()-1).getNum() < index){
+			vec.add(new Tupel<Integer, Double>(index, value));
+		}
+		else{
+			int i;
+			for( i=0 ; i< vec.size() ; i++){
+				if( vec.get(i).getNum() == index)
+					throw new IllegalArgumentException("Element existiert bereits!!!");
+				if( vec.get(i).getNum() > index)
+					vec.add(index, new Tupel<Integer, Double>(index, value));
+			}
+		}
 	}
 	
 	/**

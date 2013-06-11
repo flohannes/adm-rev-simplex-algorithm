@@ -50,12 +50,49 @@ public class Matrix {
 	 * @param col
 	 * @param entry
 	 */
-	public void addEntry( int rowIndex,  int columnIndex , double entry){
+	public void addEntry( int rowIndex,  int columnIndex , double entry)
+													throws IllegalArgumentException{
+		if( rowIndex > rowNum-1 || columnIndex > colNum-1)
+			throw new IllegalArgumentException("Index out of Bounds");
+		
 		Triple t = new Triple(rowIndex , columnIndex, entry);
 		
-		rows.get(rowIndex).add(t);
+		if( rows.get(rowIndex).isEmpty())
+			rows.get(rowIndex).add(t);
+		else if( rows.get(rowIndex).get(rows.get(rowIndex).size() - 1).getColumn() < columnIndex)
+			rows.get(rowIndex).add(t);
+		else{
+			int j;
+			for( j=0 ; j<rows.get(rowIndex).size() ; j++){
+				if(rows.get(rowIndex).get(j).getColumn() == columnIndex)
+					throw new IllegalArgumentException("Element existiert bereits!!!");
+				if(rows.get(rowIndex).get(j).getColumn()> columnIndex){
+					rows.get(rowIndex).add( j , t);
+					break;
+				}
+			}
+			if(j == rows.get(rowIndex).size())
+				rows.get(rowIndex).add(t);
+		}
 		
-		columns.get(columnIndex).add(t);
+		if( columns.get(columnIndex).isEmpty())
+			columns.get(columnIndex).add(t);
+		else if( columns.get(columnIndex).get(columns.get(columnIndex).size() - 1).getRow() < rowIndex)
+			columns.get(columnIndex).add(t);
+		else{
+			int i;
+			for( i=0; i<columns.get(columnIndex).size() ; i++){
+				if(columns.get(columnIndex).get(i).getRow()== rowIndex)
+					throw new IllegalArgumentException("Element existiert bereits!!!");
+				if(columns.get(columnIndex).get(i).getRow()> rowIndex){
+					columns.get(columnIndex).add( i , t);
+					break;
+				}
+			}
+			if( i == columns.get(columnIndex).size())
+				columns.get(columnIndex).add(t);
+		}
+		
 	}
 	
 	/**
@@ -182,7 +219,7 @@ public class Matrix {
 						columns.get(i).add(j, trip);
 						insertNewElementToRows(row, i, trip);
 				
-					}
+					}else
 					if( columns.get(i).get(j).getRow() == row){
 						columns.get(i).get(j).setEntry(entry_index * tup.getEntry() + columns.get(i).get(j).getEntry());
 					}
@@ -196,7 +233,7 @@ public class Matrix {
 						columns.get(i).add(trip);
 						insertNewElementToRows(row, i, trip);
 					
-					}
+					}else
 					if( columns.get(i).get(k).getRow() == row){
 						columns.get(i).get(k).setEntry(entry_index * tup.getEntry() + columns.get(i).get(k).getEntry());
 
@@ -273,8 +310,12 @@ public class Matrix {
 		System.out.println(res);
 */		
 		test.addEntry(0, 0, 1);
+		test.addEntry(0, 2, 0.5);
 		test.addEntry(1, 1, 1);
 		test.addEntry(2, 2, 1);
+		test.addEntry(2, 1, 2);
+
+		
 		vec.addEntry(0, 1);
 		vec.addEntry(1, 1);
 		vec.addEntry(2, 1);
