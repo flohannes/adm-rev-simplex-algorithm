@@ -12,6 +12,8 @@ public class Vector {
 		vec = new ArrayList<Tupel<Integer, Double>>();
 	}
 	
+	
+
 	public Vector( int size){
 		vec = new ArrayList<Tupel<Integer, Double>>();
 		this.size = size;
@@ -54,5 +56,8 @@ public class Vector {
 		this.size = size;
 	}
 	
+	public ArrayList<Tupel<Integer, Double>> getVec() {
+		return vec;
+	}
 	
 }
