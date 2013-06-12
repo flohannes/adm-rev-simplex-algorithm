@@ -1,6 +1,10 @@
 package Main;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import Datenstrukturen.LP;
+import Parser.Input;
 
 public class Main {
 
@@ -16,6 +20,15 @@ public class Main {
 //		System.out.println(test.indexOf("x1"));
 //		System.out.println(test);
 		
+		try {
+			Input in = new Input();
+			LP lin = in.readInput("src/InputData/bsp.mps");
+			System.out.println(in.getM());
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
