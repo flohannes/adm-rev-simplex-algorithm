@@ -50,6 +50,8 @@ public class LP {
 					if(bi.getNum() == rn.indexOf(eq.getEntry())){
 						if(bi.getEntry() < 0){
 							basis[rn.indexOf(eq.getEntry())] = m.getColNum()-1;
+							m.negateRow(rn.indexOf(eq.getEntry()));
+							b.negateBi(rn.indexOf(eq.getEntry()));
 							break;
 						}else if(bi.getEntry() > 0){
 							break;
