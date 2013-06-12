@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import Datenstrukturen.LP;
 import Datenstrukturen.Matrix;
 import Datenstrukturen.Tupel;
 import Datenstrukturen.Vector;
@@ -23,7 +24,7 @@ public class Input {
 	
 	
 		
-	public void readInput( String path) throws IOException{
+	public LP readInput( String path) throws IOException{
 		setMax(true);
 		m = new Matrix();
 		cn = new ArrayList<String>();
@@ -79,9 +80,11 @@ public class Input {
 			else if (rows){//Zeilen einlesen
 				String tempZeile = line.trim().replaceAll(" +", " ");
 				String[] zeile = tempZeile.split(" ");
-				ec.add(new Tupel<String, String>(zeile[0], zeile[1]));
-				rn.add(zeile[1]);
-				m.addRow();
+				if( !zeile[0].equals("N")){//fuer die kosten keine matrix-zeile erstellen
+					ec.add(new Tupel<String, String>(zeile[0], zeile[1]));
+					rn.add(zeile[1]);
+					m.addRow();
+				}
 			}else
 			if ( columns){//Spalten einlesen
 				String tempZeile = line.trim().replaceAll(" +", " ");
@@ -127,12 +130,15 @@ public class Input {
 		b.setSize(rn.size());
 		c.setSize(cn.size());
 		
+		System.out.println("matrix: \n"+m);
+		
+		return new LP(m, ec, rn, c, b, bounds, upperBound, lowerBound);
 	}
 	
 	public static void main (String[] arg){
 		try {
 			Input in = new Input();
-			in.readInput("src/InputData/bsp.mps");
+			in.readInput("src/InputData/Bsp_28.mps");
 			System.out.println("Ausgabe: ");
 			System.out.println(in.getM().toString());
 		} catch (IOException e) {
