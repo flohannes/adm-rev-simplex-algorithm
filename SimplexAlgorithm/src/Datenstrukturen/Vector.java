@@ -12,7 +12,9 @@ public class Vector {
 		vec = new ArrayList<Tupel<Integer, Double>>();
 	}
 	
-	
+	public void negateBi(int i){
+		this.vec.get(i).setEntry(-this.vec.get(i).getEntry());
+	}
 
 	public Vector( int size){
 		vec = new ArrayList<Tupel<Integer, Double>>();

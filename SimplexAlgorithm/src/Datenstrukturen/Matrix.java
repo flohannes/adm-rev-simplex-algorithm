@@ -256,6 +256,12 @@ public class Matrix {
 		rows.get(row).add(k, entry);
 	}
 	
+	public void negateRow(int row){
+		for(Triple e : this.rows.get(row)){
+			e.setEntry(-e.getEntry());
+		}
+	}
+	
 	public int getRowNum() {
 		return rowNum;
 	}

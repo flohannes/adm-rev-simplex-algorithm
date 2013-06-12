@@ -17,11 +17,14 @@ public class Input {
 	private ArrayList<Tupel<String, String>> ec;	//Is row equation or inequality? (eq?, name)
 	private Vector c;	//objective function /cost
 	private Vector b;	//RHS
+	private boolean isMax;
+	private ArrayList<Tupel<Integer, Double>> upperBound;
+	private ArrayList<Tupel<Integer, Double>> lowerBound;
 	
 	
-	
-	public Input( String path) throws IOException{
 		
+	public void readInput( String path) throws IOException{
+		setMax(true);
 		m = new Matrix();
 		cn = new ArrayList<String>();
 		rn = new ArrayList<String>();
@@ -35,6 +38,7 @@ public class Input {
 		boolean rows = false;
 		boolean columns = false;
 		boolean rhs = false; 
+		boolean bounds = false;
 		
 		int counter = 0;
 		while ((line = in.readLine()) != null) {
@@ -49,7 +53,15 @@ public class Input {
 			}
 			if( line.equals("ROWS")){
 				rows = true;
-			}else
+			}else if(line.equals("OBJSENSE")){
+				String max = in.readLine();
+				if(max.equals("MAX")){
+					setMax(true);
+				} else if(max.equals("MIN")){
+					setMax(false);
+				}
+			}
+			else
 			if( line.equals("COLUMNS")){
 				rows = false;
 				columns = true;
@@ -57,7 +69,11 @@ public class Input {
 			if( line.equals("RHS")){
 				columns = false;
 				rhs = true;
-			}else if(line.equals("ENDATA")){
+			}else if(line.equals("BOUNDS")){
+				rhs = false;
+				bounds = true;
+			}
+			else if(line.equals("ENDATA")){
 				break;
 			}
 			else if (rows){//Zeilen einlesen
@@ -96,16 +112,27 @@ public class Input {
 					b.addEntry(rn.indexOf(zeile[3]), Double.parseDouble(zeile[4]));
 				}
 			}
+			if(bounds){
+				String tempZeile = line.trim().replaceAll(" +", " ");
+				String[] zeile = tempZeile.split(" ");
+				
+				if(zeile[0].equals("UP")){
+					upperBound.add(new Tupel<Integer, Double>(cn.indexOf(zeile[2]), Double.parseDouble(zeile[3])));
+				} else if (zeile[0].equals("LO")){
+					lowerBound.add(new Tupel<Integer, Double>(cn.indexOf(zeile[2]), Double.parseDouble(zeile[3])));
+				}
+			}
 		}
 		in.close();
 		b.setSize(rn.size());
 		c.setSize(cn.size());
-
+		
 	}
 	
 	public static void main (String[] arg){
 		try {
-			Input in = new Input("src/InputData/bsp.mps");
+			Input in = new Input();
+			in.readInput("src/InputData/bsp.mps");
 			System.out.println("Ausgabe: ");
 			System.out.println(in.getM().toString());
 		} catch (IOException e) {
@@ -124,6 +151,14 @@ public class Input {
 
 	public ArrayList<String> getRn() {
 		return rn;
+	}
+
+	public boolean isMax() {
+		return isMax;
+	}
+
+	public void setMax(boolean isMax) {
+		this.isMax = isMax;
 	}
 
 }
