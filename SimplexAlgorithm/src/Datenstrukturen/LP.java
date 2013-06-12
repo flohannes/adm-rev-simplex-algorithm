@@ -12,6 +12,7 @@ public class LP {
 	private ArrayList<Tupel<Integer, Double>> upperBound;
 	private ArrayList<Tupel<Integer, Double>> lowerBound;
 	private int[] basis;
+	private int indexOfKuenstlicheVar;
 	
 	public LP(Matrix m,	ArrayList<Tupel<String, String>> ec, ArrayList<String> rn, Vector c, Vector b,
 			boolean isMax, ArrayList<Tupel<Integer, Double>> upperBound, ArrayList<Tupel<Integer, Double>> lowerBound) {
@@ -23,9 +24,12 @@ public class LP {
 		this.upperBound = upperBound;
 		this.lowerBound = lowerBound;
 		this.basis = new int[m.getRowNum()];
+		indexOfKuenstlicheVar = m.getColNum();
+		
 		for(Tupel<String, String> eq : ec){
 			if(eq.getNum().equals("L")){
 				m.addColumn();
+				indexOfKuenstlicheVar++;
 				m.addEntry(rn.indexOf(eq.getEntry()), m.getColNum()-1, 1);
 				for(Tupel<Integer, Double> bi : b.getVec()){
 					if(bi.getNum() == rn.indexOf(eq.getEntry())){
@@ -45,6 +49,7 @@ public class LP {
 				}
 			} else if(eq.getNum().equals("G")){
 				m.addColumn();
+				indexOfKuenstlicheVar++;
 				m.addEntry(rn.indexOf(eq.getEntry()), m.getColNum()-1, -1);
 				for(Tupel<Integer, Double> bi : b.getVec()){
 					if(bi.getNum() == rn.indexOf(eq.getEntry())){
