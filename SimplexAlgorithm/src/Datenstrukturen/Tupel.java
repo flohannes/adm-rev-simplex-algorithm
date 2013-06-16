@@ -42,6 +42,11 @@ public class Tupel<A, B> {
 		this.num = num;
 	}
 	
-	
+	public Tupel<A,B> clone(){
+		Tupel<A,B> tupel = new Tupel<A,B>();
+		tupel.setEntry(this.getEntry());
+		tupel.setNum(this.getNum());
+		return tupel;
+	}
 	
 }

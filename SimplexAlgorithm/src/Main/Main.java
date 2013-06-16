@@ -22,7 +22,7 @@ public class Main {
 		
 		try {
 			Input in = new Input();
-			LP lin = in.readInput("src/InputData/bsp.mps");
+			LP lin = in.readInput("src/InputData/Bsp_28.mps");
 			System.out.println(in.getM());
 			
 		} catch (IOException e) {

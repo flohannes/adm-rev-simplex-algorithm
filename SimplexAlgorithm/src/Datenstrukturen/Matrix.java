@@ -95,6 +95,33 @@ public class Matrix {
 		
 	}
 	
+	public double multiplyVectorMatrixColumn(Vector vec, int columnIndex){
+		int k=0;
+		double sum = 0;
+
+		for( Triple t : columns.get(columnIndex))
+			sum += t.getEntry()*vec.get(t.getRow());
+		
+		return sum;
+		
+//		for(int j=0 ; j<vec.getLength() ; j++){//alle Eintraege des Vec
+//			Tupel<Integer,Double> tmp = vec.get(j);
+//			int t = tmp.getNum();
+//			//Check ob in der Matrix an Stelle t ein 
+//			//von 0 verschiedenes Element steht
+//			while ( columns.get(columnIndex).get(k).getRow() < t){
+//				k++;
+//				if ( k == columns.get(columnIndex).size() ) break;
+//			}
+//			//falls in Zeile i der Matrix nur noch 0 steht --> Abbruch
+//			if ( k == columns.get(columnIndex).size() ) break;
+//			if( columns.get(columnIndex).get(k).getRow() == t){
+//				sum += columns.get(columnIndex).get(k).getEntry()* tmp.getEntry();
+//			}
+//		}
+//		return sum;
+	}
+	
 	/**
 	 * Rechtsseitige Vektormultiplikation
 	 * @param vec
@@ -103,36 +130,54 @@ public class Matrix {
 	 */
 	public Vector multiplyMatrixVektor( Vector vec) 
 									throws IllegalArgumentException{
-		if( vec.getSize() != colNum)//Dimensions-check
+		if( vec.getLength() != colNum)//Dimensions-check
 			throw new IllegalArgumentException("Matrixdimension mismatch");
 		
-		Vector result = new Vector();
+		double[] result = new double[rowNum];
+//		Vector result = new Vector();
 		
-		for(int  i=0 ; i< rowNum ; i++){//alle Zeilen der Matrix
-			int sum = 0;
-			int k = 0;//Laufindizes
-			int n = 0;
-			for(int j=0 ; j<vec.getLength() ; j++){//alle Eintraege des Vec
-				Tupel<Integer,Double> tmp = vec.get(j);
-				int t = tmp.getNum();
-				//Check ob in der Matrix an Stelle t ein 
-				//von 0 verschiedenes Element steht
-				while ( rows.get(i).get(k).getColumn() < t){
-					k++;
-					if ( k == rows.get(i).size() ) break;
-				}
-				//falls in Zeile i der Matrix nur noch 0 steht --> Abbruch
-				if ( k == rows.get(i).size() ) break;
-				if( rows.get(i).get(k).getColumn() == t){
-					sum += rows.get(i).get(k).getEntry()* tmp.getEntry();
-				}
+		for( int k=0 ; k<rowNum ; k++){
+			double sum = 0;
+			for(Triple trip : rows.get(k)){
+				int colInd = trip.getColumn();
+				sum += trip.getEntry()*vec.get(colInd);
 			}
-			//Eintrag zum Vec hinzufuegen, falls != 0
-			if( sum != 0 ) result.addEntry(i, sum);
-				
+			result[k] = sum;
 		}
 		
-		return result;
+		return new Vector(result);
+
+		
+		
+		
+		
+//		Vector result = new Vector();
+//		
+//		for(int  i=0 ; i< rowNum ; i++){//alle Zeilen der Matrix
+//			int sum = 0;
+//			int k = 0;//Laufindizes
+//			int n = 0;
+//			for(int j=0 ; j<vec.getLength() ; j++){//alle Eintraege des Vec
+//				Tupel<Integer,Double> tmp = vec.get(j);
+//				int t = tmp.getNum();
+//				//Check ob in der Matrix an Stelle t ein 
+//				//von 0 verschiedenes Element steht
+//				while ( rows.get(i).get(k).getColumn() < t){
+//					k++;
+//					if ( k == rows.get(i).size() ) break;
+//				}
+//				//falls in Zeile i der Matrix nur noch 0 steht --> Abbruch
+//				if ( k == rows.get(i).size() ) break;
+//				if( rows.get(i).get(k).getColumn() == t){
+//					sum += rows.get(i).get(k).getEntry()* tmp.getEntry();
+//				}
+//			}
+//			//Eintrag zum Vec hinzufuegen, falls != 0
+//			if( sum != 0 ) result.addEntry(i, sum);
+//				
+//		}
+//		
+//		return result;
 	}
 	
 	/**
@@ -141,41 +186,74 @@ public class Matrix {
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	public Vector multiplyVectorMatrix( Vector vec)
-								throws IllegalArgumentException{
-		if( vec.getSize() != rowNum)//Dimensions-check
-			throw new IllegalArgumentException("Dimension mismatch");
+//	public Vector multiplyCbMatrix( Vector vec, int[] basis){
+////		if( vec.getSize() != rowNum)//Dimensions-check
+////			throw new IllegalArgumentException("Dimension mismatch");
+//		
+//		Vector result = new Vector();
+//		
+//		loop1: for(int  i=0 ; i< colNum ; i++){//alle Spalten der Matrix
+//			int sum = 0;
+//			int k = 0;//Laufindizes
+////			int n = 0;
+//			loop2: for(int j=0 ; j<vec.getLength() ; j++){//alle Eintraege des Vec
+//				Tupel<Integer,Double> tmp = vec.get(j);
+//				int t = tmp.getNum();
+//				for(int b = 0; b<basis.length;b++){
+//					if(t == basis[b]){
+//						
+//						//Check ob in der Matrix an Stelle t ein 
+//						//von 0 verschiedenes Element steht
+//						while ( columns.get(i).get(k).getRow() < t){
+//							k++;
+//							if ( k == columns.get(i).size() ) break;
+//						}
+//						//falls in Zeile i der Matrix nur noch 0 steht --> Abbruch
+//						if ( k == columns.get(i).size() ) break loop2;
+//						if( columns.get(i).get(k).getRow() == t){
+//							System.out.println(columns.get(i).get(k).getEntry() +" mal "+ tmp.getEntry());
+//							sum += columns.get(i).get(k).getEntry()* tmp.getEntry();
+//							System.out.println(sum);
+//
+//						}
+////						break;
+//					}
+//				}
+//			}
+//			//Eintrag zum Vec hinzufuegen, falls != 0
+//			
+//			if( sum != 0 ){
+//				result.addEntry(i, sum);
+//				
+//			}
+//			
+//				
+//		}
+//		return result;
+//	}
+	/**
+	 * Linksseitige Vektormultiplikation
+	 * @param vec
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	public Vector multiplyVectorMatrix( Vector vec){
+//								throws IllegalArgumentException{
+//		if( vec.getSize() != rowNum)//Dimensions-check
+//			throw new IllegalArgumentException("Dimension mismatch");
+		double[] result = new double[colNum];
+//		Vector result = new Vector();
 		
-		Vector result = new Vector();
-		
-		for(int  i=0 ; i< colNum ; i++){//alle Spalten der Matrix
-			int sum = 0;
-			int k = 0;//Laufindizes
-			int n = 0;
-			for(int j=0 ; j<vec.getLength() ; j++){//alle Eintraege des Vec
-				Tupel<Integer,Double> tmp = vec.get(j);
-				int t = tmp.getNum();
-				//Check ob in der Matrix an Stelle t ein 
-				//von 0 verschiedenes Element steht
-				while ( columns.get(i).get(k).getRow() < t){
-					k++;
-					if ( k == columns.get(i).size() ) break;
-				}
-				//falls in Zeile i der Matrix nur noch 0 steht --> Abbruch
-				if ( k == columns.get(i).size() ) break;
-				if( columns.get(i).get(k).getRow() == t){
-					sum += columns.get(i).get(k).getEntry()* tmp.getEntry();
-
-
-
-				}
+		for( int k=0 ; k<colNum ; k++){
+			double sum = 0;
+			for(Triple trip : columns.get(k)){
+				int rowInd = trip.getRow();
+				sum += trip.getEntry()*vec.get(rowInd);
 			}
-			//Eintrag zum Vec hinzufuegen, falls != 0
-			if( sum != 0 ) result.addEntry(i, sum);
-				
+			result[k] = sum;
 		}
 		
-		return result;
+		return new Vector(result);
 	}
 	
 	
@@ -188,8 +266,8 @@ public class Matrix {
 	public void multiplyEta( Vector eta , int index){
 		
 		
-		for( Tupel<Integer,Double> tup : eta.getVec()){//suche von 0 versch. Eintrag in eta
-			int row = tup.getNum();						//und bearbeite entsprechende Zeile von A
+		for(int x = 0; x<eta.getVec().length; x++){// Tupel<Integer,Double> tup : eta.getVec()){//suche von 0 versch. Eintrag in eta
+			int row = x;						//und bearbeite entsprechende Zeile von A
 			for( int i=0 ; i<colNum ; i++){
 				double entry_index = 0;//Eintrag in A, Zeile 'index'
 				//double entry_row =0;//Eintrag in A, Zeile 'row'
@@ -206,7 +284,7 @@ public class Matrix {
 					entry_index = columns.get(i).get(k).getEntry();
 				}
 				if(row == index){// 'index'- Zeile
-					columns.get(i).get(k).setEntry(entry_index * tup.getEntry());
+					columns.get(i).get(k).setEntry(entry_index * eta.getVec()[x]);
 					//er sollte den Eintrag implizit auch in rows aendern, tut er hoffentlich
 					//sollte aber noch ueberprueft werden TODO
 				}else if( row < index){
@@ -215,13 +293,13 @@ public class Matrix {
 						j++;
 					}
 					if( columns.get(i).get(j).getRow() > row){//Element ist 0 
-						Triple trip = new Triple( row , i , entry_index*tup.getEntry());
+						Triple trip = new Triple( row , i , entry_index*eta.getVec()[x]);
 						columns.get(i).add(j, trip);
 						insertNewElementToRows(row, i, trip);
 				
 					}else
 					if( columns.get(i).get(j).getRow() == row){
-						columns.get(i).get(j).setEntry(entry_index * tup.getEntry() + columns.get(i).get(j).getEntry());
+						columns.get(i).get(j).setEntry(entry_index * eta.getVec()[x] + columns.get(i).get(j).getEntry());
 					}
 				}else{
 					while( columns.get(i).get(k).getRow() < row ){
@@ -229,13 +307,13 @@ public class Matrix {
 						if(k == columns.get(i).size() ) break;
 					}
 					if(k == columns.get(i).size() ){//Element ist 0
-						Triple trip = new Triple( row , i , entry_index*tup.getEntry());
+						Triple trip = new Triple( row , i , entry_index*eta.getVec()[x]);
 						columns.get(i).add(trip);
 						insertNewElementToRows(row, i, trip);
 					
 					}else
 					if( columns.get(i).get(k).getRow() == row){
-						columns.get(i).get(k).setEntry(entry_index * tup.getEntry() + columns.get(i).get(k).getEntry());
+						columns.get(i).get(k).setEntry(entry_index * eta.getVec()[x] + columns.get(i).get(k).getEntry());
 
 					}
 
@@ -269,6 +347,14 @@ public class Matrix {
 	public int getColNum() {
 		return colNum;
 	}
+	
+	public void createI(int m){
+		for(int i = 0; i < m; i++){
+			this.addColumn();
+			this.addRow();
+			this.addEntry(i, i, 1);
+		}
+	}
 
 	public String toString(){
 		String erg = "";
@@ -300,11 +386,11 @@ public class Matrix {
 	
 	public static void main(String[] args) {
 		Matrix test = new Matrix();
-		Vector vec = new Vector(3);
 		for (int i=0 ; i<3 ;i++){
 			test.addColumn();
 			test.addRow();
 		}
+		
 /*		test.addEntry(0, 1, 2);//0  2
 		test.addEntry(1, 0, 1);//1  2
 		test.addEntry(1, 1, 2);
@@ -316,20 +402,25 @@ public class Matrix {
 		System.out.println(res);
 */		
 		test.addEntry(0, 0, 1);
-		test.addEntry(0, 2, 0.5);
+//		test.addEntry(0, 1, 2);
 		test.addEntry(1, 1, 1);
-		test.addEntry(2, 2, 1);
-		test.addEntry(2, 1, 2);
+//		test.addEntry(2, 1, 1);
+		test.addEntry(2, 2, 2);
 
-		
-		vec.addEntry(0, 1);
-		vec.addEntry(1, 1);
-		vec.addEntry(2, 1);
+		double[] vec = new double[3];
+		vec[0]=0;
+		vec[1]=1;
+		vec[2]=2;
+		Vector vect = new Vector(vec);
 
+		test.multiplyEta(vect, 1);
 		System.out.println(test);
-		
-		test.multiplyEta(vec, 1);
-		System.out.println(test);
+		int[] b = new int[3];
+		b[0]= 1; b[1]=2 ; b[2]=3;
+
+//		System.out.println(test.multiplyVectorMatrixColumn(vec, 1));
+//		Vector v = test.multiplyCbMatrix(vec, b);
+//		System.out.println(v);
 	}
 
 }
