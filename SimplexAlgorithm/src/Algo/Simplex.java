@@ -52,6 +52,8 @@ public class Simplex {
 		basisInverse.createI(basis.length);
 		
 		this.BTRAN(costP1);
+		int maxIndex = this.PRICE(costP1);
+		this.FTRAN(maxIndex);
 	}
 	
 	private void phase2(){
@@ -69,7 +71,7 @@ public class Simplex {
 		schattenpreise = basisInverse.multiplyVectorMatrix(cB);
 	}
 	
-	private void PRICE( Vector cost){
+	private int PRICE( Vector cost){
 		int MaxIndex =-1;
 		double max=0;
 		
@@ -80,9 +82,12 @@ public class Simplex {
 		}
 		if( max == 0)
 			isPerfect = true;
-		
+		return MaxIndex;
 	}
 	
+	public void FTRAN(int maxIndex){
+		basisInverse.multiplyMatrixMatrixColumn(m, nichtbasis[maxIndex]);
+	}
 	
 	public Vector getSchattenpreise() {
 		return schattenpreise;

@@ -95,6 +95,16 @@ public class Matrix {
 		
 	}
 	
+	public Vector multiplyMatrixMatrixColumn(Matrix m, int index){
+//		if( vec.getLength() != colNum)//Dimensions-check
+//			throw new IllegalArgumentException("Matrixdimension mismatch");
+		
+		Vector vec = m.getMatrixColumn(index);
+		return multiplyMatrixVektor(vec);
+		
+	
+	}
+	
 	public double multiplyVectorMatrixColumn(Vector vec, int columnIndex){
 		int k=0;
 		double sum = 0;
@@ -383,6 +393,14 @@ public class Matrix {
 		return erg;
 	}
 	
+	private Vector getMatrixColumn(int i){
+		double[] vec = new double[rowNum];
+		
+		for( Triple t : columns.get(i)){
+			vec[t.getRow()] = t.getEntry();
+		}
+		return new Vector(vec);
+	}
 	
 	public static void main(String[] args) {
 		Matrix test = new Matrix();
