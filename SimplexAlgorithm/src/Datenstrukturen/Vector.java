@@ -4,59 +4,58 @@ import java.util.ArrayList;
 
 public class Vector {
 
-	private ArrayList<Tupel<Integer, Double>> vec;
+	private double[] vec;
 	
 	private int size;
 	
-	public Vector(){
-		vec = new ArrayList<Tupel<Integer, Double>>();
+	public Vector(int size){
+		vec = new double[size];
+	}
+	
+	public Vector(double[] d){
+		vec = d;
 	}
 	
 	public void negateBi(int i){
-		this.vec.get(i).setEntry(-this.vec.get(i).getEntry());
-	}
-
-	public Vector( int size){
-		vec = new ArrayList<Tupel<Integer, Double>>();
-		this.size = size;
+		vec[i] = -vec[i];
 	}
 	
-	public void addEntry(int index, double value) throws IllegalArgumentException{
-		
-		if(vec.isEmpty()){
-			vec.add(new Tupel<Integer, Double>(index, value));
-		}
-		else if(vec.get(vec.size()-1).getNum() < index){
-			vec.add(new Tupel<Integer, Double>(index, value));
-		}
-		else{
-			int i;
-			for( i=0 ; i< vec.size() ; i++){
-				if( vec.get(i).getNum() == index)
-					throw new IllegalArgumentException("Element existiert bereits!!!");
-				if( vec.get(i).getNum() > index)
-					vec.add(index, new Tupel<Integer, Double>(index, value));
-			}
-		}
-	}
+//	public void addEntry(int isBasis,int index, double value) throws IllegalArgumentException{
+//		
+//		if(vec.isEmpty()){
+//			vec.add(new Triple(isBasis,index, value));
+//		}
+//		else if(vec.get(vec.size()-1).getColumn() < index){
+//			vec.add(new Triple(isBasis, index, value));
+//		}
+//		else{
+//			int i;
+//			for( i=0 ; i< vec.size() ; i++){
+//				if( vec.get(i).getColumn() == index)
+//					throw new IllegalArgumentException("Element existiert bereits!!!");
+//				if( vec.get(i).getColumn()> index)
+//					vec.add(index, new Triple(isBasis,index, value));
+//			}
+//		}
+//	}
 	
 	/**
 	 * Laenge der ArrayList
 	 * @return
 	 */
 	public int getLength(){
-		return vec.size();
+		return vec.length;
 	}
 	
-	public Tupel get(int index){
-		return vec.get(index);
+	public double get(int index){
+		return vec[index];
 	}
 
 	@Override
 	public String toString() {
 		String out = "";
-		for( Tupel<Integer, Double> t : vec){
-			out += t.getEntry() + " ; ";
+		for( Double t : vec){
+			out += ""+t+ " ; ";
 		}
 		return "Vector: \n"+out;
 	}
@@ -73,8 +72,14 @@ public class Vector {
 		this.size = size;
 	}
 	
-	public ArrayList<Tupel<Integer, Double>> getVec() {
+	public double[] getVec() {
 		return vec;
 	}
 	
+	
+
+	public void setVec(double[] vec) {
+		this.vec = vec;
+	}
+
 }

@@ -2,8 +2,8 @@ package Datenstrukturen;
 
 public class Triple{
 
-	private int row;
-	private int column;
+	private int row;	//sonst: 0 für nichtbasis, 1 für basis
+	private int column;	//sonst: row
 	private double entry;
 	
 	/**
@@ -44,8 +44,29 @@ public class Triple{
 	public void setEntry(double entry) {
 		this.entry = entry;
 	}
+	
+	public int getNum(){
+		return this.getColumn();
+	}
+	
+	public boolean isBasis(){
+		if(this.row == 0)
+			return false;
+		else 
+			return true;
+	}
+	
+	public void setBasis(boolean b){
+		if(b)
+			this.row = 1;
+		else
+			this.row = 0;
+	}
 
 	
-
+	public Triple clone(){
+		Triple t = new Triple(this.getRow(), this.getColumn(), this.getEntry());
+		return t;
+	}
 	
 }

@@ -16,8 +16,8 @@ public class Input {
 	private ArrayList<String> cn;	//column names
 	private ArrayList<String> rn;	//row names
 	private ArrayList<Tupel<String, String>> ec;	//Is row equation or inequality? (eq?, name)
-	private Vector c;	//objective function /cost
-	private Vector b;	//RHS
+	private double[] c;	//objective function /cost
+	private double[] b;	//RHS
 	private boolean isMax;
 	private ArrayList<Tupel<Integer, Double>> upperBound;
 	private ArrayList<Tupel<Integer, Double>> lowerBound;
@@ -30,8 +30,9 @@ public class Input {
 		cn = new ArrayList<String>();
 		rn = new ArrayList<String>();
 		ec = new ArrayList<Tupel<String, String>>();
-		c = new  Vector();
-		b = new  Vector();
+//		c = new  Vector();
+//		b = new  Vector();
+		ArrayList<Tupel<Integer, Double>> cList = new ArrayList<Tupel<Integer, Double>>();
 		
 		BufferedReader in = new BufferedReader(new FileReader(path));
 		String line = null;
@@ -69,6 +70,7 @@ public class Input {
 			}else
 			if( line.equals("RHS")){
 				columns = false;
+				b = new double[rn.size()];
 				rhs = true;
 			}else if(line.equals("BOUNDS")){
 				rhs = false;
@@ -94,13 +96,14 @@ public class Input {
 					m.addColumn();
 				}
 				if(zeile[1].equals("COST")){
-					c.addEntry(cn.indexOf(zeile[0]), Double.parseDouble(zeile[2]));
+//					cList.addEntry(0,cn.indexOf(zeile[0]), Double.parseDouble(zeile[2]));
+					cList.add(new Tupel(cn.indexOf(zeile[0]), Double.parseDouble(zeile[2])));
 				} else{
 					m.addEntry(rn.indexOf(zeile[1]), cn.indexOf(zeile[0]), Double.parseDouble(zeile[2]));
 				}
 				if(zeile.length > 3){
 					if(zeile[3].equals("COST")){
-						c.addEntry(cn.indexOf(zeile[0]), Double.parseDouble(zeile[4]));
+						cList.add(new Tupel(cn.indexOf(zeile[0]), Double.parseDouble(zeile[4])));
 					} else{
 						m.addEntry(rn.indexOf(zeile[3]), cn.indexOf(zeile[0]), Double.parseDouble(zeile[4]));
 					}
@@ -110,9 +113,9 @@ public class Input {
 			if( rhs){//rechte seite einlesen
 				String tempZeile = line.trim().replaceAll(" +", " ");
 				String[] zeile = tempZeile.split(" ");
-				b.addEntry(rn.indexOf(zeile[1]), Double.parseDouble(zeile[2]));
+				b[rn.indexOf(zeile[1])] = Double.parseDouble(zeile[2]);
 				if(zeile.length > 3){
-					b.addEntry(rn.indexOf(zeile[3]), Double.parseDouble(zeile[4]));
+					b[rn.indexOf(zeile[3])] =  Double.parseDouble(zeile[4]);
 				}
 			}
 			if(bounds){
@@ -127,12 +130,12 @@ public class Input {
 			}
 		}
 		in.close();
-		b.setSize(rn.size());
-		c.setSize(cn.size());
+
+		for(Tupel<Integer, Double> t : cList){
+			c[t.getNum()] = t.getEntry();
+		}
 		
-		System.out.println("matrix: \n"+m);
-		
-		return new LP(m, ec, rn, c, b, bounds, upperBound, lowerBound);
+		return new LP(m, ec, rn, new Vector(c), new Vector(b), bounds, upperBound, lowerBound);
 	}
 	
 	public static void main (String[] arg){
