@@ -243,6 +243,22 @@ public class LP {
 
 
 
+	public int[] getNichtBasis() {
+		return nichtbasis;
+	}
+
+
+
+
+
+	public void setNichtBasis(int[] nichtbasis) {
+		this.nichtbasis = nichtbasis;
+	}
+
+
+
+
+
 	/**
 	 * Gibt die Basis als String aus
 	 * @return
