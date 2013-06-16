@@ -14,13 +14,20 @@ public class Simplex {
 	private Vector originalCostFunction;
 	private Matrix basisInverse;
 	private int[] basis;
+	private int[] nichtbasis;
 	private Vector schattenpreise;
+	private Matrix m;
+	private boolean isPerfect;
 	
 	public Simplex(LP lp){
 		this.lp = lp;
 		this.originalCostFunction = lp.getC();
 		this.basisInverse = new Matrix();
 		this.basis = lp.getBasis();
+		this.nichtbasis = lp.getNichtBasis();
+		this.m = lp.getM();
+		this.isPerfect = false;
+		
 	}
 	
 	
@@ -62,7 +69,17 @@ public class Simplex {
 		schattenpreise = basisInverse.multiplyVectorMatrix(cB);
 	}
 	
-	private void PRICE(){
+	private void PRICE( Vector cost){
+		int MaxIndex =-1;
+		double max=0;
+		
+		for( int i=0 ; i<nichtbasis.length ; i++){
+			double redCost = cost.get(nichtbasis[i]) - m.multiplyVectorMatrixColumn(schattenpreise, nichtbasis[i]);
+			if( redCost > max)
+				MaxIndex = i;	
+		}
+		if( max == 0)
+			isPerfect = true;
 		
 	}
 	
