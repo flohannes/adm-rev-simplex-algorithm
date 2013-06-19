@@ -140,8 +140,9 @@ public class Simplex {
 			if(i == indexChuzr)
 				eta[i] = 1 / eintragStelleChuzr;
 			else
-				eta[i] = - d.get(i) / eintragStelleChuzr;
+				eta[i] = -d.get(i) / eintragStelleChuzr;
 		}
+		Vector et = new Vector(eta);
 		basisInverse.multiplyEta(new Vector(eta), indexChuzr);
 		bQuer = basisInverse.multiplyMatrixVektor(this.lp.getB());
 		int basisTmp = basis[indexChuzr];
