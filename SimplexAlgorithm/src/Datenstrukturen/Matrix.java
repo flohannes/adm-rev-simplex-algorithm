@@ -278,8 +278,9 @@ public class Matrix {
 		
 		for(int x = 0; x<eta.getVec().length; x++){// Tupel<Integer,Double> tup : eta.getVec()){//suche von 0 versch. Eintrag in eta
 			int row = x;						//und bearbeite entsprechende Zeile von A
+			if( row == index) continue;
 			for( int i=0 ; i<colNum ; i++){
-				double entry_index = 0;//Eintrag in A, Zeile 'index'
+				double entry_index = 0.;//Eintrag in A, Zeile 'index'
 				//double entry_row =0;//Eintrag in A, Zeile 'row'
 				int k=0;
 				while( columns.get(i).get(k).getRow() < index ){//suche Element in der aktuellen Spalte
@@ -301,8 +302,9 @@ public class Matrix {
 					int j=0;
 					while( columns.get(i).get(j).getRow() < row){
 						j++;
+						if( j == columns.get(i).size()) break;
 					}
-					if( columns.get(i).get(j).getRow() > row){//Element ist 0 
+					if( j == columns.get(i).size() || columns.get(i).get(j).getRow() > row){//Element ist 0 
 						Triple trip = new Triple( row , i , entry_index*eta.getVec()[x]);
 						columns.get(i).add(j, trip);
 						insertNewElementToRows(row, i, trip);
@@ -311,14 +313,16 @@ public class Matrix {
 					if( columns.get(i).get(j).getRow() == row){
 						columns.get(i).get(j).setEntry(entry_index * eta.getVec()[x] + columns.get(i).get(j).getEntry());
 					}
-				}else{
+				}else{//row > index
 					while( columns.get(i).get(k).getRow() < row ){
 						k++;										
 						if(k == columns.get(i).size() ) break;
 					}
-					if(k == columns.get(i).size() ){//Element ist 0
+					if(k == columns.get(i).size() || columns.get(i).get(k).getRow() > row ){//Element ist 0
+						System.out.println(entry_index);
 						Triple trip = new Triple( row , i , entry_index*eta.getVec()[x]);
-						columns.get(i).add(trip);
+//						System.out.println(trip.getEntry());
+						columns.get(i).add(k ,trip);
 						insertNewElementToRows(row, i, trip);
 					
 					}else
@@ -331,6 +335,26 @@ public class Matrix {
 				
 				
 					
+			}
+		}
+		
+		int row = index;
+		int x = index;
+		for( int i=0 ; i<colNum ; i++){
+			double entry_index = 0.;//Eintrag in A, Zeile 'index'
+			//double entry_row =0;//Eintrag in A, Zeile 'row'
+			int k=0;
+			while( columns.get(i).get(k).getRow() < index ){//suche Element in der aktuellen Spalte
+				k++;										// das an 'index'- Stellt steht
+				if(k == columns.get(i).size() ) break;
+			}
+			if( k == columns.get(i).size() || columns.get(i).get(k).getRow() > index){
+				continue;						//es ist Null, und bleibt Null --> naechste Spalte
+				
+			}
+			if( columns.get(i).get(k).getRow() == index){//es ist ungl. 0 mit Wert 'entry'
+				entry_index = columns.get(i).get(k).getEntry();
+				columns.get(i).get(k).setEntry(entry_index * eta.getVec()[x]);
 			}
 		}
 	}
@@ -423,18 +447,18 @@ public class Matrix {
 //		test.addEntry(0, 1, 2);
 		test.addEntry(1, 1, 1);
 //		test.addEntry(2, 1, 1);
-		test.addEntry(2, 2, 2);
+		test.addEntry(2, 2, 1);
 
 		double[] vec = new double[3];
-		vec[0]=0;
-		vec[1]=1;
-		vec[2]=2;
+		vec[0]=1./3;
+		vec[1]=-4./3;
+		vec[2]=-1./3;
 		Vector vect = new Vector(vec);
-
-		test.multiplyEta(vect, 1);
+System.out.println(vect);
+		
+		test.multiplyEta(vect, 0);
 		System.out.println(test);
-		int[] b = new int[3];
-		b[0]= 1; b[1]=2 ; b[2]=3;
+		
 
 //		System.out.println(test.multiplyVectorMatrixColumn(vec, 1));
 //		Vector v = test.multiplyCbMatrix(vec, b);
