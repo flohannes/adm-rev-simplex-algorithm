@@ -36,7 +36,7 @@ public class Input {
 		
 		BufferedReader in = new BufferedReader(new FileReader(path));
 		String line = null;
-
+		int numberOfSchlupfs = 0;
 		boolean rows = false;
 		boolean columns = false;
 		boolean rhs = false; 
@@ -86,6 +86,9 @@ public class Input {
 					ec.add(new Tupel<String, String>(zeile[0], zeile[1]));
 					rn.add(zeile[1]);
 					m.addRow();
+					if(zeile[0].equals("L") | zeile[0].equals("R")){
+						numberOfSchlupfs++;
+					}
 				}
 			}else
 			if ( columns){//Spalten einlesen
@@ -131,6 +134,7 @@ public class Input {
 		}
 		in.close();
 
+		c = new double[cList.size() + numberOfSchlupfs];
 		for(Tupel<Integer, Double> t : cList){
 			c[t.getNum()] = t.getEntry();
 		}

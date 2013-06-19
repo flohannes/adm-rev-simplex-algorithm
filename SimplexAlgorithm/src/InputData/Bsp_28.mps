@@ -16,6 +16,6 @@ Y4  X1  2   X2  4
 Y4  X3  1   COST  17
 
 RHS
-B   X1  225  X2  -420
+B   X1  225  X2  420
 B   X3  117
 ENDATA

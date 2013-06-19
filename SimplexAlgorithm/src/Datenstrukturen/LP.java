@@ -26,7 +26,7 @@ public class LP {
 		this.upperBound = upperBound;
 		this.lowerBound = lowerBound;
 		this.basis = new int[m.getRowNum()];
-		this.nichtbasis = new int[m.getColNum() - basis.length];
+		
 		indexOfKuenstlicheVar = m.getColNum();
 		
 		for(Tupel<String, String> eq : ec){
@@ -92,6 +92,7 @@ public class LP {
 			}
 		}
 		int index=0;
+		this.nichtbasis = new int[m.getColNum() - basis.length];
 		for( int i=0 ; i< m.getColNum() ; i++){
 			boolean counter = true;
 			for( int j : basis){
@@ -101,14 +102,15 @@ public class LP {
 				}
 			}
 			if( counter){
+				
 				nichtbasis[index]= i;
 				index++;
 			}
 				
 		}
 		
-		System.out.println(basisToString());
-		System.out.println("K-Index: "+ indexOfKuenstlicheVar);
+//		System.out.println(basisToString());
+//		System.out.println("K-Index: "+ indexOfKuenstlicheVar);
 	}
 	
 	 
