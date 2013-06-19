@@ -81,5 +81,14 @@ public class Vector {
 	public void setVec(double[] vec) {
 		this.vec = vec;
 	}
+	
+	public Vector clone(){
+		double[] newV = new double[this.getVec().length];
+		for(int i = 0; i < newV.length; i++){
+			newV[i] = this.getVec()[i];
+		}
+		Vector v = new Vector(newV);
+		return v;
+	}
 
 }
