@@ -134,7 +134,7 @@ public class Input {
 		}
 		in.close();
 
-		c = new double[cList.size() + numberOfSchlupfs];
+		c = new double[cn.size() + numberOfSchlupfs];
 		for(Tupel<Integer, Double> t : cList){
 			c[t.getNum()] = t.getEntry();
 		}

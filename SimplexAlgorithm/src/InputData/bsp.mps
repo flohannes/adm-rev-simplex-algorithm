@@ -1,9 +1,9 @@
 
 ROWS
- E X1
- E X2
- E X3
- N COST
+E X1
+E X2
+E X3
+N COST
 
 COLUMNS
 Y1  X1  6   X2  2
