@@ -222,6 +222,7 @@ public class Simplex {
 		}
 		if( max == 0)
 			isPerfect = true;
+		System.out.println("Reduzierte Kosten: "+max);
 		return MaxIndex;
 	}
 	
@@ -296,7 +297,7 @@ public class Simplex {
 		// TODO Auto-generated method stub
 		try {
 			Input in = new Input();
-			LP lin = in.readInput("src/InputData/Bsp_28.mps");
+			LP lin = in.readInput("src/InputData/bsp.mps");
 			Simplex simplex = new Simplex(lin);
 			simplex.calculateOptimum();
 			
