@@ -45,7 +45,7 @@ public class Matrix {
 	}
 	
 	/**
-	 * Erstellt Tupel und fügt es der jeweiligen Spalte UND Zeile hinzu
+	 * Erstellt Tupel und fuegt es der jeweiligen Spalte UND Zeile hinzu
 	 * @param row
 	 * @param col
 	 * @param entry
@@ -117,6 +117,11 @@ public class Matrix {
 				if(this.columns.get(i).get(j).getRow() == index){
 					this.columns.get(i).remove(j);
 				}
+			}
+		}
+		for(int i=index ; i<rows.size() ; i++){
+			for(int j=0 ; j<rows.get(i).size() ; j++){
+				rows.get(i).get(j).setRow(rows.get(i).get(j).getRow()-1);
 			}
 		}
 	}

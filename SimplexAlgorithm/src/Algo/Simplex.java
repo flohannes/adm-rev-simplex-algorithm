@@ -42,7 +42,7 @@ public class Simplex {
 	public void calculateOptimum(){
 		this.phase1();
 		if(istUnbeschraenkt){
-			System.out.println("Problem ist unbeschränkt");
+			System.out.println("Problem ist unbeschraenkt");
 			
 		}else if(istLeer){
 				System.out.println("Problem ist leer");
@@ -56,7 +56,7 @@ public class Simplex {
 		if(isPerfect)
 			System.out.println("Optimales Ergebnis");
 		else
-			System.out.println("Unbeschränkt!!");
+			System.out.println("Unbeschraenkt!!");
 			
 	}
 	
@@ -86,7 +86,7 @@ public class Simplex {
 			Vector d = this.FTRAN(maxIndex);
 			if(d == null){
 				this.istUnbeschraenkt = true;
-				System.out.println("ist unbeschränkt");
+				System.out.println("ist unbeschraenkt");
 				break;
 			}
 			int indexChuzr = this.CHUZR(d);
@@ -124,17 +124,25 @@ public class Simplex {
 					}
 					if(count){
 						System.out.println("hallo");
-						m.deleteRow(i);
+//						m.deleteRow(basis[i]);
 						basis[i]=-1;
 						basisLengthCounter++;
 						basisInverse.deleteColumn(i);
 						basisInverse.deleteRow(i);
 						bQuer.deleteEntry(i);
 						b.deleteEntry(i);
+						for(int k = 0; k < nichtbasis.length;k++){
+							if(nichtbasis[k] <indexOfKuenstlicheVar){
+								m.deleteRow(nichtbasis[k]);
+								break;
+								
+							}
+						}
 					}
 				}
 			}
 		}
+		
 		int[] tmpN = new int[m.getColNum() - basis.length +basisLengthCounter];
 		int[] tmpB = new int[basis.length -basisLengthCounter];
 		int count=0;
@@ -173,7 +181,7 @@ public class Simplex {
 			Vector d = this.FTRAN(maxIndex);
 			if(d == null){
 				this.istUnbeschraenkt = true;
-				System.out.println("ist unbeschränkt");
+				System.out.println("ist unbeschraenkt");
 				break;
 			}
 			int indexChuzr = this.CHUZR(d);
@@ -288,7 +296,7 @@ public class Simplex {
 		// TODO Auto-generated method stub
 		try {
 			Input in = new Input();
-			LP lin = in.readInput("src/InputData/Bsp1");
+			LP lin = in.readInput("src/InputData/Bsp_28.mps");
 			Simplex simplex = new Simplex(lin);
 			simplex.calculateOptimum();
 			
