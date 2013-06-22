@@ -82,6 +82,18 @@ public class Vector {
 		this.vec = vec;
 	}
 	
+	public void deleteEntry(int index){
+		double[] ne = new double[vec.length-1];
+		int count=0;
+		for(int i=0;i< vec.length ;i++){
+			if(i != index){
+				ne[count]=vec[i];
+				count++;
+			}
+		}
+		this.vec = ne;
+	}
+	
 	public Vector clone(){
 		double[] newV = new double[this.getVec().length];
 		for(int i = 0; i < newV.length; i++){

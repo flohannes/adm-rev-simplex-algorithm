@@ -95,7 +95,7 @@ public class Matrix {
 		
 	}
 	
-	public void deleteColumn(int index){
+	public void deleteColumns(int index){
 		for(int i = colNum-1; i>= index; i--){
 			this.columns.remove(i);
 		}
@@ -116,6 +116,18 @@ public class Matrix {
 			for( int j = 0; j < this.columns.get(i).size(); j++){
 				if(this.columns.get(i).get(j).getRow() == index){
 					this.columns.get(i).remove(j);
+				}
+			}
+		}
+	}
+	
+	public void deleteColumn(int index){
+		this.columns.remove(index);
+		this.colNum--;
+		for(int i = 0; i < this.rowNum; i++){
+			for( int j = 0; j < this.rows.get(i).size(); j++){
+				if(this.rows.get(i).get(j).getRow() == index){
+					this.rows.get(i).remove(j);
 				}
 			}
 		}
