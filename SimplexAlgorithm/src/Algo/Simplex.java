@@ -19,8 +19,13 @@ public class Simplex {
 	private Matrix m;
 	private boolean isPerfect;
 	private Vector bQuer;
+	private boolean istUnbeschraenkt;
+	private boolean istLeer;
+	
 	
 	public Simplex(LP lp){
+		this.istUnbeschraenkt = false;
+		this.istLeer = false;
 		this.lp = lp;
 		this.originalCostFunction = lp.getC().clone();
 		this.basisInverse = new Matrix();
@@ -33,8 +38,24 @@ public class Simplex {
 	
 	
 	public void calculateOptimum(){
-//		this.phase1();
-		this.phase2();
+		this.phase1();
+		if(istUnbeschraenkt){
+			System.out.println("Problem ist unbeschränkt");
+			
+		}else if(istLeer){
+				System.out.println("Problem ist leer");
+		
+		}else{
+			System.out.println("Phase 2:  ");
+			isPerfect = false;
+			this.phase2();
+		}
+		
+		if(isPerfect)
+			System.out.println("Optimales Ergebnis");
+		else
+			System.out.println("Unbeschränkt!!");
+			
 	}
 	
 	private void phase1(){
@@ -49,17 +70,89 @@ public class Simplex {
 
 		this.lp.setC(costP1);
 		
-		//Basisinverse erstellen
 		basisInverse.createI(basis.length);
-		this.BTRAN(costP1);
-		int maxIndex = this.PRICE(costP1);
-		Vector d = this.FTRAN(maxIndex);
-		int indexChuzr = this.CHUZR(d);
-		this.WRETA(maxIndex, indexChuzr, d);
+		System.out.println(this.bQuer);
+		for(int i = 0; i < this.basis.length; i++){
+			System.out.println(this.basis[i]);
+		}
+		int counter = 1;
+		while(true){
+			this.BTRAN(costP1);
+			int maxIndex = this.PRICE(costP1);
+			if(maxIndex == -1)
+				break;
+			Vector d = this.FTRAN(maxIndex);
+			if(d == null){
+				this.istUnbeschraenkt = true;
+				System.out.println("ist unbeschränkt");
+				break;
+			}
+			int indexChuzr = this.CHUZR(d);
+			this.WRETA(maxIndex, indexChuzr, d);
+			System.out.println("Runde: "+counter);
+			System.out.println(this.bQuer);
+			for(int i = 0; i < this.basis.length; i++){
+				System.out.println(this.basis[i]);
+			}
+			counter++;
+		}
+		int basisLengthCounter=0;
+		m.deleteColumn(indexOfKuenstlicheVar);
+		for(int i = 0; i < this.basis.length; i++){
+			if(basis[i] >= indexOfKuenstlicheVar){
+				if(this.bQuer.getVec()[i] > 0){
+					this.istLeer = true;
+					break;
+				}
+				else{
+					boolean count = true;
+					for(int j = 0; j < this.nichtbasis.length; j++){
+						if(nichtbasis[j] < indexOfKuenstlicheVar){
+							if(basisInverse.multiplyRowColumn(m, i, nichtbasis[j]) != 0){
+								System.out.println("BasisInv: "+basisInverse);
+								System.out.println("Matrix: "+m );
+								System.out.println("row: "+i);
+								System.out.println("col: "+nichtbasis[j]);
+								this.WRETA(j, i, this.FTRAN(j));
+								count = false;
+								break;
+							}
+						}
+					}
+					if(count){
+						System.out.println("hallo");
+						m.deleteRow(i);
+						basis[i]=-1;
+						basisLengthCounter++;
+					}
+				}
+			}
+		}
+		int[] tmpN = new int[m.getColNum() - basis.length +basisLengthCounter];
+		int[] tmpB = new int[basis.length -basisLengthCounter];
+		int count=0;
+		for(int i=0 ; i<nichtbasis.length ;i++){
+			if(nichtbasis[i]< indexOfKuenstlicheVar){
+				tmpN[count] = nichtbasis[i];
+				count++;
+			}
+		}
+		nichtbasis = tmpN;
+		count=0;
+		for(int i=0 ;i<basis.length ;i++){
+			if(basis[i] != -1){
+				tmpB[count]=basis[i];
+				count++;
+			}
+		}
+		basis = tmpB;
+		
+		
 	}
 	
 	private void phase2(){
-		basisInverse.createI(basis.length);
+		System.out.println(BasisToString());
+//		basisInverse.createI(basis.length);
 		System.out.println(this.bQuer);
 		for(int i = 0; i < this.basis.length; i++){
 			System.out.println(this.basis[i]);
@@ -71,6 +164,11 @@ public class Simplex {
 			if(maxIndex == -1)
 				break;
 			Vector d = this.FTRAN(maxIndex);
+			if(d == null){
+				this.istUnbeschraenkt = true;
+				System.out.println("ist unbeschränkt");
+				break;
+			}
 			int indexChuzr = this.CHUZR(d);
 			this.WRETA(maxIndex, indexChuzr, d);
 			System.out.println("Runde: "+counter);
@@ -80,7 +178,6 @@ public class Simplex {
 			}
 			counter++;
 		}
-		
 	}
 	
 	
@@ -113,7 +210,16 @@ public class Simplex {
 	}
 	
 	public Vector FTRAN(int maxIndex){
-		return basisInverse.multiplyMatrixMatrixColumn(m, nichtbasis[maxIndex]);
+		Vector d = basisInverse.multiplyMatrixMatrixColumn(m, nichtbasis[maxIndex]);
+		int counter = 0;
+		for(double eintrag : d.getVec()){
+			if(eintrag <= 0){
+				counter++;
+			}
+		}
+		if(counter == d.getVec().length)
+			return null;
+		return d;
 	}
 	
 	public int CHUZR(Vector d){
@@ -153,6 +259,18 @@ public class Simplex {
 	public Vector getSchattenpreise() {
 		return schattenpreise;
 	}
+	
+	
+	public String BasisToString(){
+		String bas="Basis: ";
+		String nichtbas="Nichtbasis: ";
+		for(int i= 0 ; i<basis.length ;i++){
+			bas += "; "+basis[i];
+		}
+		for( int j=0 ; j<nichtbasis.length ; j++)
+			nichtbas += "; "+nichtbasis[j];
+		return bas +"\n"+nichtbas;
+	}
 
 
 	/**
@@ -162,7 +280,7 @@ public class Simplex {
 		// TODO Auto-generated method stub
 		try {
 			Input in = new Input();
-			LP lin = in.readInput("src/InputData/Bsp_28.mps");
+			LP lin = in.readInput("src/InputData/Bsp1");
 			Simplex simplex = new Simplex(lin);
 			simplex.calculateOptimum();
 			
