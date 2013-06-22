@@ -21,6 +21,7 @@ public class Simplex {
 	private Vector bQuer;
 	private boolean istUnbeschraenkt;
 	private boolean istLeer;
+	private Vector b;
 	
 	
 	public Simplex(LP lp){
@@ -34,6 +35,7 @@ public class Simplex {
 		this.m = lp.getM();
 		this.isPerfect = false;
 		this.bQuer = lp.getB().clone();
+		this.b = lp.getB().clone();
 	}
 	
 	
@@ -97,7 +99,8 @@ public class Simplex {
 			counter++;
 		}
 		int basisLengthCounter=0;
-		m.deleteColumn(indexOfKuenstlicheVar);
+		m.deleteColumns(indexOfKuenstlicheVar);
+		System.out.println("BasisInv: "+basisInverse);
 		for(int i = 0; i < this.basis.length; i++){
 			if(basis[i] >= indexOfKuenstlicheVar){
 				if(this.bQuer.getVec()[i] > 0){
@@ -124,6 +127,10 @@ public class Simplex {
 						m.deleteRow(i);
 						basis[i]=-1;
 						basisLengthCounter++;
+						basisInverse.deleteColumn(i);
+						basisInverse.deleteRow(i);
+						bQuer.deleteEntry(i);
+						b.deleteEntry(i);
 					}
 				}
 			}
@@ -147,7 +154,7 @@ public class Simplex {
 		}
 		basis = tmpB;
 		
-		
+		System.out.println("BasisInv: "+basisInverse);
 	}
 	
 	private void phase2(){
@@ -177,6 +184,7 @@ public class Simplex {
 				System.out.println(this.basis[i]);
 			}
 			counter++;
+			System.out.println("BasisInv: "+basisInverse);
 		}
 	}
 	
@@ -250,7 +258,7 @@ public class Simplex {
 		}
 		Vector et = new Vector(eta);
 		basisInverse.multiplyEta(new Vector(eta), indexChuzr);
-		bQuer = basisInverse.multiplyMatrixVektor(this.lp.getB());
+		bQuer = basisInverse.multiplyMatrixVektor(b);
 		int basisTmp = basis[indexChuzr];
 		basis[indexChuzr] = nichtbasis[indexPrice];
 		nichtbasis[indexPrice] = basisTmp;
