@@ -18,13 +18,14 @@ public class Simplex {
 	private int[] nichtbasis;
 	private Vector schattenpreise;
 	private Matrix m;
-	private boolean isPerfect;
+	public boolean isPerfect;
 	private Vector bQuer;
 	private boolean istUnbeschraenkt;
 	private boolean istLeer;
 	private Vector b;
+	private boolean showComments;
 	
-	
+
 	public Simplex(LP lp){
 		this.istUnbeschraenkt = false;
 		this.istLeer = false;
@@ -40,24 +41,22 @@ public class Simplex {
 	}
 	
 	
-	public void calculateOptimum(){
+	public void calculateOptimum(boolean showComments){
+		this.showComments = showComments;
+		
 		this.phase1();
 		isPerfect = false;
 		if(istUnbeschraenkt){
 			System.out.println("Problem ist unbeschraenkt");
-			
 		}else if(istLeer){
-				System.out.println("Problem ist leer");
-		
+			System.out.println("Problem ist leer");
 		}else{
 			System.out.println("Phase 2:  ");
-			
 			this.phase2();
 		}
 		
 		if(isPerfect)
 			System.out.println("Optimales Ergebnis: " + this.getOptimum());
-			
 		else if(istUnbeschraenkt){
 			System.out.println("Unbeschraenkt!!");
 		}
@@ -213,6 +212,9 @@ public class Simplex {
 		Vector cB = new Vector(cBi);
 		schattenpreise = basisInverse.multiplyVectorMatrix(cB);
 //		System.out.println(basisInverse.getColNum()+" , "+basisInverse.getRowNum());
+		if(showComments){
+			System.out.println(schattenpreise.toString());
+		}
 	}
 	
 	private int PRICE( Vector cost){
@@ -230,6 +232,9 @@ public class Simplex {
 		if( max == 0)
 			isPerfect = true;
 //		System.out.println("Reduzierte Kosten: "+max);
+		if(showComments){
+			System.out.println("Reduzierte Kosten: "+max + ", Index: " + MaxIndex);
+		}
 		return MaxIndex;
 	}
 	
@@ -241,6 +246,9 @@ public class Simplex {
 				counter++;
 			}
 		}
+		if(showComments){
+			System.out.println(d.toString());
+		}
 		if(counter == d.getVec().length)
 			return null;
 		return d;
@@ -248,6 +256,9 @@ public class Simplex {
 	
 	public int CHUZR(Vector d){
 		Tupel<Integer,Double> lambda0 = this.lambda0(d);
+		if(showComments){
+			System.out.println(lambda0.getNum());
+		}
 		return lambda0.getNum();
 	}
 	
@@ -272,12 +283,21 @@ public class Simplex {
 			else
 				eta[i] = -d.get(i) / eintragStelleChuzr;
 		}
-		Vector et = new Vector(eta);
+//		Vector et = new Vector(eta);
 		basisInverse.multiplyEta(new Vector(eta), indexChuzr);
 		bQuer = basisInverse.multiplyMatrixVektor(b);
 		int basisTmp = basis[indexChuzr];
 		basis[indexChuzr] = nichtbasis[indexPrice];
 		nichtbasis[indexPrice] = basisTmp;
+		if(showComments){
+			System.out.println("WRETA");
+			System.out.println(basisInverse.toString());
+			System.out.println(bQuer.toString());
+			System.out.println("Basis:");
+			for(int i = 0; i < basis.length; i++){
+				System.out.println(basis[i]);
+			}
+		}
 	}
 	
 	public Vector getSchattenpreise() {
@@ -305,6 +325,17 @@ public class Simplex {
 		return optimum;
 	}
 	
+
+	public int[] getBasis() {
+		return basis;
+	}
+
+
+	public Vector getbQuer() {
+		return bQuer;
+	}
+
+	
 	/**
 	 * @param args
 	 */
@@ -315,7 +346,7 @@ public class Simplex {
 			Input in = new Input();
 			LP lin = in.readInput("src/InputData/"+dataName);
 			Simplex simplex = new Simplex(lin);
-			simplex.calculateOptimum();
+			simplex.calculateOptimum(false);
 			
 			Output out = new Output(in.getCn(), simplex.bQuer, simplex.basis, simplex.getOptimum(), "src/OutputData/Lsg"+dataName);
 //			System.out.println(simplex.bQuer);
