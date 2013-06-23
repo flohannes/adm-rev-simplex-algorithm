@@ -7,6 +7,7 @@ import Datenstrukturen.Matrix;
 import Datenstrukturen.Tupel;
 import Datenstrukturen.Vector;
 import Parser.Input;
+import Parser.Output;
 
 public class Simplex {
 
@@ -41,6 +42,7 @@ public class Simplex {
 	
 	public void calculateOptimum(){
 		this.phase1();
+		isPerfect = false;
 		if(istUnbeschraenkt){
 			System.out.println("Problem ist unbeschraenkt");
 			
@@ -49,14 +51,16 @@ public class Simplex {
 		
 		}else{
 			System.out.println("Phase 2:  ");
-			isPerfect = false;
+			
 			this.phase2();
 		}
 		
 		if(isPerfect)
-			System.out.println("Optimales Ergebnis");
-		else
+			System.out.println("Optimales Ergebnis: " + this.getOptimum());
+			
+		else if(istUnbeschraenkt){
 			System.out.println("Unbeschraenkt!!");
+		}
 			
 	}
 	
@@ -73,10 +77,10 @@ public class Simplex {
 		this.lp.setC(costP1);
 		
 		basisInverse.createI(basis.length);
-		System.out.println(this.bQuer);
-		for(int i = 0; i < this.basis.length; i++){
-			System.out.println(this.basis[i]);
-		}
+//		System.out.println(this.bQuer);
+//		for(int i = 0; i < this.basis.length; i++){
+//			System.out.println(this.basis[i]);
+//		}
 		int counter = 1;
 		while(true){
 			this.BTRAN(costP1);
@@ -92,15 +96,15 @@ public class Simplex {
 			int indexChuzr = this.CHUZR(d);
 			this.WRETA(maxIndex, indexChuzr, d);
 			System.out.println("Runde: "+counter);
-			System.out.println(this.bQuer);
-			for(int i = 0; i < this.basis.length; i++){
-				System.out.println(this.basis[i]);
-			}
+//			System.out.println(this.bQuer);
+//			for(int i = 0; i < this.basis.length; i++){
+//				System.out.println(this.basis[i]);
+//			}
 			counter++;
 		}
 		int basisLengthCounter=0;
 		m.deleteColumns(indexOfKuenstlicheVar);
-		System.out.println("BasisInv: "+basisInverse);
+//		System.out.println("BasisInv: "+basisInverse);
 		for(int i = 0; i < this.basis.length; i++){
 			if(basis[i] >= indexOfKuenstlicheVar){
 				if(this.bQuer.getVec()[i] > 0){
@@ -112,10 +116,10 @@ public class Simplex {
 					for(int j = 0; j < this.nichtbasis.length; j++){
 						if(nichtbasis[j] < indexOfKuenstlicheVar){
 							if(basisInverse.multiplyRowColumn(m, i, nichtbasis[j]) != 0){
-								System.out.println("BasisInv: "+basisInverse);
-								System.out.println("Matrix: "+m );
-								System.out.println("row: "+i);
-								System.out.println("col: "+nichtbasis[j]);
+//								System.out.println("BasisInv: "+basisInverse);
+//								System.out.println("Matrix: "+m );
+//								System.out.println("row: "+i);
+//								System.out.println("col: "+nichtbasis[j]);
 								this.WRETA(j, i, this.FTRAN(j));
 								count = false;
 								break;
@@ -123,7 +127,7 @@ public class Simplex {
 						}
 					}
 					if(count){
-						System.out.println("hallo");
+//						System.out.println("hallo");
 //						m.deleteRow(basis[i]);
 						basis[i]=-1;
 						basisLengthCounter++;
@@ -142,36 +146,37 @@ public class Simplex {
 				}
 			}
 		}
-		
-		int[] tmpN = new int[m.getColNum() - basis.length +basisLengthCounter];
-		int[] tmpB = new int[basis.length -basisLengthCounter];
-		int count=0;
-		for(int i=0 ; i<nichtbasis.length ;i++){
-			if(nichtbasis[i]< indexOfKuenstlicheVar){
-				tmpN[count] = nichtbasis[i];
-				count++;
+		if(!istLeer){
+			int[] tmpN = new int[m.getColNum() - basis.length +basisLengthCounter];
+			int[] tmpB = new int[basis.length -basisLengthCounter];
+			int count=0;
+			for(int i=0 ; i<nichtbasis.length ;i++){
+				if(nichtbasis[i]< indexOfKuenstlicheVar){
+					tmpN[count] = nichtbasis[i];
+					count++;
+				}
 			}
-		}
-		nichtbasis = tmpN;
-		count=0;
-		for(int i=0 ;i<basis.length ;i++){
-			if(basis[i] != -1){
-				tmpB[count]=basis[i];
-				count++;
+			nichtbasis = tmpN;
+			count=0;
+			for(int i=0 ;i<basis.length ;i++){
+				if(basis[i] != -1){
+					tmpB[count]=basis[i];
+					count++;
+				}
 			}
+			basis = tmpB;
 		}
-		basis = tmpB;
-		
-		System.out.println("BasisInv: "+basisInverse);
+//		System.out.println("BasisInv nach phase 1: "+basisInverse);
 	}
 	
 	private void phase2(){
-		System.out.println(BasisToString());
+		
+//		System.out.println(BasisToString());
 //		basisInverse.createI(basis.length);
-		System.out.println(this.bQuer);
-		for(int i = 0; i < this.basis.length; i++){
-			System.out.println(this.basis[i]);
-		}
+//		System.out.println(this.bQuer);
+//		for(int i = 0; i < this.basis.length; i++){
+//			System.out.println(this.basis[i]);
+//		}
 		int counter = 1;
 		while(true){
 			this.BTRAN(originalCostFunction);
@@ -187,12 +192,12 @@ public class Simplex {
 			int indexChuzr = this.CHUZR(d);
 			this.WRETA(maxIndex, indexChuzr, d);
 			System.out.println("Runde: "+counter);
-			System.out.println(this.bQuer);
-			for(int i = 0; i < this.basis.length; i++){
-				System.out.println(this.basis[i]);
-			}
+//			System.out.println(this.bQuer);
+//			for(int i = 0; i < this.basis.length; i++){
+//				System.out.println(this.basis[i]);
+//			}
 			counter++;
-			System.out.println("BasisInv: "+basisInverse);
+//			System.out.println("BasisInv: "+basisInverse);
 		}
 	}
 	
@@ -200,6 +205,8 @@ public class Simplex {
 	private void BTRAN(Vector cost){
 //		Vector cB = new Vector();
 		double[] cBi = new double[basis.length];
+//		System.out.println(cost.getLength());
+//		System.out.println(m.getColNum());
 		for(int i = 0; i < basis.length; i++){
 			cBi[i] = cost.get(basis[i]);
 		}
@@ -222,7 +229,7 @@ public class Simplex {
 		}
 		if( max == 0)
 			isPerfect = true;
-		System.out.println("Reduzierte Kosten: "+max);
+//		System.out.println("Reduzierte Kosten: "+max);
 		return MaxIndex;
 	}
 	
@@ -290,21 +297,31 @@ public class Simplex {
 	}
 
 
+	public double getOptimum(){
+		double optimum=0;
+		for(int i = 0; i < basis.length; i++){
+			optimum += originalCostFunction.get(basis[i]) * bQuer.get(i);
+		}
+		return optimum;
+	}
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		try {
+			String dataName = "Bsp_28.mps";
 			Input in = new Input();
-			LP lin = in.readInput("src/InputData/bsp.mps");
+			LP lin = in.readInput("src/InputData/"+dataName);
 			Simplex simplex = new Simplex(lin);
 			simplex.calculateOptimum();
 			
-			System.out.println(simplex.bQuer);
-			for(int i = 0; i < simplex.basis.length; i++){
-				System.out.println(simplex.basis[i]);
-			}
+			Output out = new Output(in.getCn(), simplex.bQuer, simplex.basis, simplex.getOptimum(), "src/OutputData/Lsg"+dataName);
+//			System.out.println(simplex.bQuer);
+//			for(int i = 0; i < simplex.basis.length; i++){
+//				System.out.println(simplex.basis[i]);
+//			}
 //			for()
 			
 		} catch (IOException e) {
