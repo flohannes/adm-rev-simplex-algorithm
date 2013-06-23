@@ -41,6 +41,7 @@ public class Input {
 		boolean columns = false;
 		boolean rhs = false; 
 		boolean bounds = false;
+		String cost = "";
 		
 		int counter = 0;
 		while ((line = in.readLine()) != null) {
@@ -49,7 +50,8 @@ public class Input {
 ////			System.out.println();
 //			String[] zeile2 = s.split(" ");
 //			System.out.println(counter + " : "+ line.isEmpty() +" . length:" +  zeile2.length);
-//			counter++;
+			counter++;
+			System.out.println(counter);
 			if(line.isEmpty()){
 				continue;
 			}
@@ -89,6 +91,8 @@ public class Input {
 					if(zeile[0].equals("L") | zeile[0].equals("R")){
 						numberOfSchlupfs++;
 					}
+				} else if(zeile[0].equals("N")){
+					cost = zeile[1];
 				}
 			}else
 			if ( columns){//Spalten einlesen
@@ -98,14 +102,14 @@ public class Input {
 					cn.add(zeile[0]);
 					m.addColumn();
 				}
-				if(zeile[1].equals("COST")){
+				if(zeile[1].equals(cost)){
 //					cList.addEntry(0,cn.indexOf(zeile[0]), Double.parseDouble(zeile[2]));
 					cList.add(new Tupel(cn.indexOf(zeile[0]), Double.parseDouble(zeile[2])));
 				} else{
 					m.addEntry(rn.indexOf(zeile[1]), cn.indexOf(zeile[0]), Double.parseDouble(zeile[2]));
 				}
 				if(zeile.length > 3){
-					if(zeile[3].equals("COST")){
+					if(zeile[3].equals(cost)){
 						cList.add(new Tupel(cn.indexOf(zeile[0]), Double.parseDouble(zeile[4])));
 					} else{
 						m.addEntry(rn.indexOf(zeile[3]), cn.indexOf(zeile[0]), Double.parseDouble(zeile[4]));
@@ -139,6 +143,7 @@ public class Input {
 			c[t.getNum()] = t.getEntry();
 		}
 		
+//		System.out.println("Fertig");
 		return new LP(m, ec, rn, new Vector(c), new Vector(b), bounds, upperBound, lowerBound);
 	}
 	

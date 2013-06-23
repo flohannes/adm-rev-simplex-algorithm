@@ -272,7 +272,7 @@ public class Matrix {
 						if(k == columns.get(i).size() ) break;
 					}
 					if(k == columns.get(i).size() || columns.get(i).get(k).getRow() > row ){//Element ist 0
-						System.out.println(entry_index);
+//						System.out.println(entry_index);
 						Triple trip = new Triple( row , i , entry_index*eta.getVec()[x]);
 //						System.out.println(trip.getEntry());
 						columns.get(i).add(k ,trip);
