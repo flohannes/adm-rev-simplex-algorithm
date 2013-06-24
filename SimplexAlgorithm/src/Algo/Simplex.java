@@ -1,6 +1,7 @@
 package Algo;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import Datenstrukturen.LP;
 import Datenstrukturen.Matrix;
@@ -99,6 +100,7 @@ public class Simplex {
 //			for(int i = 0; i < this.basis.length; i++){
 //				System.out.println(this.basis[i]);
 //			}
+//			System.out.println();
 			counter++;
 		}
 		int basisLengthCounter=0;
@@ -220,14 +222,20 @@ public class Simplex {
 	private int PRICE( Vector cost){
 		int MaxIndex =-1;
 		double max=0;
+		int MaxMinIndex= Integer.MAX_VALUE; //
 		
 		for( int i=0 ; i<nichtbasis.length ; i++){
 			
 			double redCost = cost.get(nichtbasis[i]) - m.multiplyVectorMatrixColumn(schattenpreise, nichtbasis[i]);
-			if( redCost > max){
-				MaxIndex = i;	
-				max = redCost;
+			if(redCost > 0 && nichtbasis[i] < MaxMinIndex){//Kleinster-Variablen-Index-Regel
+				MaxIndex = i;
+				MaxMinIndex = nichtbasis[i];
+				max=redCost;
 			}
+//			if( redCost > max){//Steilster-Anstieg-Regel
+//				MaxIndex = i;	
+//				max = redCost;
+//			}
 		}
 		if( max == 0)
 			isPerfect = true;
@@ -265,10 +273,18 @@ public class Simplex {
 	private Tupel<Integer, Double> lambda0(Vector d){
 		double minLambda=Double.POSITIVE_INFINITY;
 		int index = -1;
+		int MinIndex=0;
 		for(int i = 0; i < this.bQuer.getVec().length; i++){
 			if(minLambda > this.bQuer.get(i) / d.get(i) && d.get(i) > 0){
 				minLambda = this.bQuer.get(i) / d.get(i);
 				index = i;
+				MinIndex = Integer.MAX_VALUE;
+			}
+			else if(minLambda == this.bQuer.get(i) / d.get(i) && d.get(i) > 0){//Kleinster-Variablen-Index-Regel
+				if(MinIndex > basis[i]){
+					MinIndex = basis[i];
+					index = i;
+				}
 			}
 		}
 		return new Tupel<Integer, Double>(index, minLambda);
@@ -341,14 +357,16 @@ public class Simplex {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		Output out = null;
 		try {
-			String dataName = "Bsp_28.mps";
+			String dataName = "ISRAEL.mps";
 			Input in = new Input();
 			LP lin = in.readInput("src/InputData/"+dataName);
 			Simplex simplex = new Simplex(lin);
 			simplex.calculateOptimum(false);
 			
-			Output out = new Output(in.getCn(), simplex.bQuer, simplex.basis, simplex.getOptimum(), "src/OutputData/Lsg"+dataName);
+			if(simplex.isPerfect)
+				out = new Output(in.getCn(), simplex.bQuer, simplex.basis, simplex.getOptimum(), "src/OutputData/Lsg"+dataName);
 //			System.out.println(simplex.bQuer);
 //			for(int i = 0; i < simplex.basis.length; i++){
 //				System.out.println(simplex.basis[i]);

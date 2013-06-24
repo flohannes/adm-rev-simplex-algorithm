@@ -51,7 +51,7 @@ public class Input {
 //			String[] zeile2 = s.split(" ");
 //			System.out.println(counter + " : "+ line.isEmpty() +" . length:" +  zeile2.length);
 			counter++;
-			System.out.println(counter);
+//			System.out.println(counter);
 			if(line.isEmpty()){
 				continue;
 			}
