@@ -83,19 +83,20 @@ public class Simplex {
 //		}
 		int counter = 1;
 		while(true){
+			System.out.println("Runde: "+counter);
 			this.BTRAN(costP1);
 			int maxIndex = this.PRICE(costP1);
 			if(maxIndex == -1)
 				break;
 			Vector d = this.FTRAN(maxIndex);
-			if(d == null){
+			
+			int indexChuzr = this.CHUZR(d);
+			if(indexChuzr ==-1){
 				this.istUnbeschraenkt = true;
 				System.out.println("ist unbeschraenkt");
 				break;
 			}
-			int indexChuzr = this.CHUZR(d);
 			this.WRETA(maxIndex, indexChuzr, d);
-			System.out.println("Runde: "+counter);
 //			System.out.println(this.bQuer);
 //			for(int i = 0; i < this.basis.length; i++){
 //				System.out.println(this.basis[i]);
@@ -185,12 +186,13 @@ public class Simplex {
 			if(maxIndex == -1)
 				break;
 			Vector d = this.FTRAN(maxIndex);
-			if(d == null){
+			
+			int indexChuzr = this.CHUZR(d);
+			if(indexChuzr ==-1){
 				this.istUnbeschraenkt = true;
 				System.out.println("ist unbeschraenkt");
 				break;
 			}
-			int indexChuzr = this.CHUZR(d);
 			this.WRETA(maxIndex, indexChuzr, d);
 			System.out.println("Runde: "+counter);
 //			System.out.println(this.bQuer);
@@ -248,17 +250,17 @@ public class Simplex {
 	
 	public Vector FTRAN(int maxIndex){
 		Vector d = basisInverse.multiplyMatrixMatrixColumn(m, nichtbasis[maxIndex]);
-		int counter = 0;
-		for(double eintrag : d.getVec()){
-			if(eintrag <= 0){
-				counter++;
-			}
-		}
+//		int counter = 0;
+//		for(double eintrag : d.getVec()){
+//			if(eintrag <= 0){
+//				counter++;
+//			}
+//		}
 		if(showComments){
 			System.out.println(d.toString());
 		}
-		if(counter == d.getVec().length)
-			return null;
+//		if(counter == d.getVec().length)
+//			return null;
 		return d;
 	}
 	
@@ -291,6 +293,7 @@ public class Simplex {
 	}
 	
 	public void WRETA(int indexPrice, int indexChuzr, Vector d){
+		if( d== null)System.out.println("null");
 		double[] eta = new double[d.getVec().length];
 		double eintragStelleChuzr = d.get(indexChuzr);
 		for(int i = 0; i < d.getVec().length; i++){
@@ -359,7 +362,7 @@ public class Simplex {
 		// TODO Auto-generated method stub
 		Output out = null;
 		try {
-			String dataName = "ISRAEL.mps";
+			String dataName = "BRANDY.mps";
 			Input in = new Input();
 			LP lin = in.readInput("src/InputData/"+dataName);
 			Simplex simplex = new Simplex(lin);
