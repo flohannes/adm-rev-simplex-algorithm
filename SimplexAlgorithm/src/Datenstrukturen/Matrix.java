@@ -56,7 +56,9 @@ public class Matrix {
 			throw new IllegalArgumentException("Index out of Bounds");
 		
 		Triple t = new Triple(rowIndex , columnIndex, entry);
-		
+		columns.get(columnIndex).add(t);
+		rows.get(rowIndex).add(t);
+	/*	
 		if( rows.get(rowIndex).isEmpty())
 			rows.get(rowIndex).add(t);
 		else if( rows.get(rowIndex).get(rows.get(rowIndex).size() - 1).getColumn() < columnIndex)
@@ -92,7 +94,7 @@ public class Matrix {
 			if( i == columns.get(columnIndex).size())
 				columns.get(columnIndex).add(t);
 		}
-		
+		*/
 	}
 	
 	public void deleteColumns(int index){
