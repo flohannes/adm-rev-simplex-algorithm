@@ -1,6 +1,7 @@
 package Algo;
 
 import java.io.IOException;
+import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
 
 import Datenstrukturen.LP;
@@ -168,7 +169,7 @@ public class Simplex {
 			}
 			basis = tmpB;
 		}
-//		System.out.println("BasisInv nach phase 1: "+basisInverse);
+		
 	}
 	
 	private void phase2(){
@@ -249,6 +250,7 @@ public class Simplex {
 	}
 	
 	public Vector FTRAN(int maxIndex){
+		
 		Vector d = basisInverse.multiplyMatrixMatrixColumn(m, nichtbasis[maxIndex]);
 //		int counter = 0;
 //		for(double eintrag : d.getVec()){
@@ -280,7 +282,7 @@ public class Simplex {
 			if(minLambda > this.bQuer.get(i) / d.get(i) && d.get(i) > 0){
 				minLambda = this.bQuer.get(i) / d.get(i);
 				index = i;
-				MinIndex = Integer.MAX_VALUE;
+				MinIndex = basis[i];
 			}
 			else if(minLambda == this.bQuer.get(i) / d.get(i) && d.get(i) > 0){//Kleinster-Variablen-Index-Regel
 				if(MinIndex > basis[i]){
@@ -362,7 +364,7 @@ public class Simplex {
 		// TODO Auto-generated method stub
 		Output out = null;
 		try {
-			String dataName = "BRANDY.mps";
+			String dataName = "bspLeer.mps";
 			Input in = new Input();
 			LP lin = in.readInput("src/InputData/"+dataName);
 			Simplex simplex = new Simplex(lin);

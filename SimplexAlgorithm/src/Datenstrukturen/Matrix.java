@@ -109,6 +109,7 @@ public class Matrix {
 				}
 			}
 		}
+		
 	}
 	
 	public void deleteRow(int index){
@@ -136,6 +137,11 @@ public class Matrix {
 				if(this.rows.get(i).get(j).getRow() == index){
 					this.rows.get(i).remove(j);
 				}
+			}
+		}
+		for(int i=index ; i<columns.size() ; i++){
+			for(int j=0 ; j<columns.get(i).size() ; j++){
+				columns.get(i).get(j).setColumn(columns.get(i).get(j).getColumn()-1);
 			}
 		}
 	}
@@ -183,7 +189,6 @@ public class Matrix {
 		
 		double[] result = new double[rowNum];
 //		Vector result = new Vector();
-		
 		for( int k=0 ; k<rowNum ; k++){
 			double sum = 0;
 			for(Triple trip : rows.get(k)){
